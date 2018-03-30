@@ -1,0 +1,13 @@
+name: nexus-repository-manager
+version: 0.1
+description: A reference OpenShift deployment for Nexus Repository Manager
+keywords:
+- quickstart
+  ci
+  repository-manager
+  nexus3
+  nexus
+  sonatype
+home: https://www.sonatype.com/
+sources:
+- https://github.com/sonatype-nexus-community/container-management-reference-architecture

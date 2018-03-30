@@ -1,0 +1,8 @@
+# Sonatype Nexus Repository Manager service name
+name: nexus
+# Sonatype Nexus Repository Manager version
+nexusVersion: latest
+# Volume space available for Sonatype Nexus Repository Manager e.g. 512Mi, 2Gi
+volumeCapacity: 2Gi
+# Max memory allocated to the Nexus Repository Manager pod
+maxMemory: 1Gi

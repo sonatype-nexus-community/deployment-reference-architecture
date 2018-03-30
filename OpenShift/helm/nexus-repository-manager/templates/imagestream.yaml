@@ -1,0 +1,12 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    app: {{ .Values.name | quote }}
+  name: {{ .Values.name | quote }}
+spec:
+  tags:
+  - from:
+      kind: DockerImage
+      name: registry.connect.redhat.com/sonatype/nexus-repository-manager:{{ .Values.nexusVersion }}
+    name: {{ .Values.nexusVersion }}
