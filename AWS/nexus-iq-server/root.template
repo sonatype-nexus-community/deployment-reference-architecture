@@ -1,0 +1,600 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Nexus IQ Server Root Stack.",
+  "Parameters":   {
+    "ChefRecipeVersion":     {
+      "Type": "String",
+      "Default": "release-0.4.20180427-182307.041f84c",
+      "Description": "Version of chef cookbook to install"
+    },
+    "DeleteBlockDeviceOnTermination":     {
+      "Type": "String",
+      "Default": "false",
+      "AllowedValues":       [
+        "false",
+        "true"
+      ],
+      "MinLength": 1,
+      "Description": "Automatically delete the instance's root block device on instance termination."
+    },
+    "InstanceType":     {
+      "Type": "String",
+      "Default": "t2.large",
+      "AllowedValues":       [
+        "t2.large",
+        "t2.xlarge",
+        "t2.2xlarge",
+        "m4.large",
+        "m4.xlarge",
+        "m4.2xlarge",
+        "m4.4xlarge",
+        "m4.10xlarge",
+        "m4.16xlarge",
+        "m3.large",
+        "m3.xlarge",
+        "m3.2xlarge"
+      ],
+      "MinLength": 1,
+      "Description": "The instance type"
+    },
+    "JavaDownloadUrl":     {
+      "Type": "String",
+      "Default": "https://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/server-jre-8u172-linux-x64.tar.gz",
+      "MinLength": 1,
+      "Description": "The Java download URL"
+    },
+    "JavaSha256":     {
+      "Type": "String",
+      "Default": "3d0a5db2300423a1fd6ee25c229dbd5320d79204c73844337f5b6a082d58541f",
+      "MinLength": 1,
+      "Description": "The Java download SHA-256 hash"
+    },
+    "KeyName":     {
+      "Type": "String",
+      "Default": "",
+      "Description": "Your key pair name for this region"
+    },
+    "LogGroupName":     {
+      "Type": "String",
+      "Default": "",
+      "Description": "A custom log group name"
+    },
+    "NexusIQVersion":     {
+      "Type": "String",
+      "Default": "1.47.0-01",
+      "MinLength": 1,
+      "Description": "The Nexus IQ Server version"
+    },
+    "NexusIQSha256":     {
+      "Type": "String",
+      "Default": "eb0710e3509279df157a41dec4460efd3b148c2482733cfea556938ad87cae47",
+      "MinLength": 1,
+      "Description": "The Nexus IQ Server SHA-256 hash"
+    },
+    "VpcNetBlock":     {
+      "Type": "String",
+      "Default": "10.0.0.0/16",
+      "Description": "The network address block for the VPC",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+    "SubnetAz":     {
+      "Type": "String",
+      "Default": "10.0.1.0/24",
+      "Description": "The network address block for subnet 1",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x."
+    }
+  },
+  "Metadata": {"AWS::CloudFormation::Interface":   {
+    "ParameterGroups":     [
+            {
+        "Label": {"default": "Launch configuration"},
+        "Parameters": ["KeyName"]
+      },
+            {
+        "Label": {"default": "Network configuration"},
+        "Parameters":         [
+          "VpcNetBlock",
+          "SubnetAz"
+        ]
+      },
+            {
+        "Label": {"default": "Instance configuration"},
+        "Parameters":         [
+          "InstanceType",
+          "DeleteBlockDeviceOnTermination"
+        ]
+      },
+            {
+        "Label": {"default": "Nexus IQ Server version"},
+        "Parameters":         [
+          "NexusIQVersion",
+          "NexusIQSha256"
+        ]
+      },
+            {
+        "Label": {"default": "Java version"},
+        "Parameters":         [
+          "JavaDownloadUrl",
+          "JavaSha256"
+        ]
+      },
+            {
+        "Label": {"default": "Internal parameters"},
+        "Parameters": ["ChefRecipeVersion"]
+      }
+    ],
+    "ParameterLabels":     {
+      "ChefRecipeVersion": {"default": "Version of chef cookbook to install"},
+      "KeyName": {"default": "Key pair"},
+      "InstanceType": {"default": "Instance type"},
+      "DeleteBlockDeviceOnTermination": {"default": "Delete root block device on termination"},
+      "NexusIQVersion": {"default": "Nexus IQ Server version"},
+      "NexusIQSha256": {"default": "Nexus IQ Server SHA-256"},
+      "JavaDownloadUrl": {"default": "Java Download Url"},
+      "JavaSha256": {"default": "Java SHA-256"},
+      "VpcNetBlock": {"default": "VPC network block"},
+      "SubnetAz": {"default": "Subnet network block"},
+      "LogGroupName": {"default": "CloudWatch log group name"}
+    }
+  }},
+  "Mappings": {"AmiRegionMap":   {
+    "us-east-1": {"centos7": "ami-ae7bfdb8"},
+    "us-east-2": {"centos7": "ami-9cbf9bf9"},
+    "us-west-2": {"centos7": "ami-0c2aba6c"},
+    "eu-west-1": {"centos7": "ami-0d063c6b"},
+    "eu-central-1": {"centos7": "ami-7cbc6e13"},
+    "ap-southeast-2": {"centos7": "ami-24959b47"},
+    "ca-central-1": {"centos7": "ami-daeb57be"}
+  }},
+  "Conditions":   {
+    "HasKeyName": {"Fn::Not": [{"Fn::Equals":     [
+      "",
+      {"Ref": "KeyName"}
+    ]}]},
+    "HasLogGroupName": {"Fn::Not": [{"Fn::Equals":     [
+      "",
+      {"Ref": "LogGroupName"}
+    ]}]}
+  },
+  "Resources":   {
+    "Vpc":     {
+      "Type": "AWS::EC2::VPC",
+      "Properties":       {
+        "CidrBlock": {"Ref": "VpcNetBlock"},
+        "InstanceTenancy": "default",
+        "EnableDnsSupport": "true",
+        "EnableDnsHostnames": "true",
+        "Tags":         [
+                    {
+            "Key": "Platform",
+            "Value": "nexus-iq"
+          },
+                    {
+            "Key": "Version",
+            "Value": {"Ref": "NexusIQVersion"}
+          }
+        ]
+      }
+    },
+    "InstanceSecurityGroup":     {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties":       {
+        "GroupDescription": "Nexus IQ EC2 Security Group",
+        "SecurityGroupIngress":         [
+                    {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "CidrIp": "0.0.0.0/0"
+          },
+                    {
+            "IpProtocol": "tcp",
+            "FromPort": "8070",
+            "ToPort": "8070",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "Tags":         [
+                    {
+            "Key": "Platform",
+            "Value": "nexus-iq"
+          },
+                    {
+            "Key": "Version",
+            "Value": {"Ref": "NexusIQVersion"}
+          }
+        ],
+        "VpcId": {"Ref": "Vpc"}
+      }
+    },
+    "InstanceSubnet":     {
+      "Type": "AWS::EC2::Subnet",
+      "Properties":       {
+        "CidrBlock": {"Ref": "SubnetAz"},
+        "MapPublicIpOnLaunch": true,
+        "VpcId": {"Ref": "Vpc"},
+        "Tags":         [
+                    {
+            "Key": "Platform",
+            "Value": "nexus-iq"
+          },
+                    {
+            "Key": "Version",
+            "Value": {"Ref": "NexusIQVersion"}
+          }
+        ]
+      }
+    },
+    "SubnetRouteTableAssociation":     {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties":       {
+        "RouteTableId": {"Ref": "RouteTable"},
+        "SubnetId": {"Ref": "InstanceSubnet"}
+      }
+    },
+    "InternetGateway":     {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {"Tags":       [
+                {
+          "Key": "Platform",
+          "Value": "nexus-iq"
+        },
+                {
+          "Key": "Version",
+          "Value": {"Ref": "NexusIQVersion"}
+        }
+      ]}
+    },
+    "VPCGatewayAttachment":     {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties":       {
+        "VpcId": {"Ref": "Vpc"},
+        "InternetGatewayId": {"Ref": "InternetGateway"}
+      }
+    },
+    "DefaultRoute":     {
+      "Type": "AWS::EC2::Route",
+      "Properties":       {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "RouteTableId": {"Ref": "RouteTable"},
+        "GatewayId": {"Ref": "InternetGateway"}
+      },
+      "DependsOn": "VPCGatewayAttachment"
+    },
+    "RouteTable":     {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties":       {
+        "VpcId": {"Ref": "Vpc"},
+        "Tags":         [
+                    {
+            "Key": "Platform",
+            "Value": "nexus-iq"
+          },
+                    {
+            "Key": "Version",
+            "Value": {"Ref": "NexusIQVersion"}
+          }
+        ]
+      }
+    },
+    "NexusInstance":     {
+      "Type": "AWS::EC2::Instance",
+      "Properties":       {
+        "ImageId": {"Fn::FindInMap":         [
+          "AmiRegionMap",
+          {"Ref": "AWS::Region"},
+          "centos7"
+        ]},
+        "InstanceType": {"Ref": "InstanceType"},
+        "IamInstanceProfile": {"Ref": "InstanceRoleInstanceProfile"},
+        "BlockDeviceMappings": [        {
+          "DeviceName": "/dev/sda1",
+          "Ebs": {"DeleteOnTermination": {"Ref": "DeleteBlockDeviceOnTermination"}}
+        }],
+        "NetworkInterfaces": [        {
+          "DeleteOnTermination": "true",
+          "DeviceIndex": 0,
+          "SubnetId": {"Ref": "InstanceSubnet"},
+          "GroupSet": [{"Ref": "InstanceSecurityGroup"}],
+          "AssociatePublicIpAddress": "true"
+        }],
+        "KeyName": {"Fn::If":         [
+          "HasKeyName",
+          {"Ref": "KeyName"},
+          {"Ref": "AWS::NoValue"}
+        ]},
+        "Tags":         [
+                    {
+            "Key": "Platform",
+            "Value": "nexus-iq-server"
+          },
+                    {
+            "Key": "Version",
+            "Value": {"Ref": "NexusIQVersion"}
+          },
+                    {
+            "Key": "Name",
+            "Value": {"Ref": "AWS::StackName"}
+          }
+        ],
+        "UserData": {"Fn::Base64": {"Fn::Join":         [
+          "\n",
+                    [
+            "#cloud-config",
+            "packages:",
+            " - wget",
+            " - python",
+            " - ruby",
+            " - epel-release",
+            "bootcmd:",
+            " - 'echo [main] > /etc/yum/pluginconf.d/fastestmirror.conf'",
+            " - 'echo enabled=0 >> /etc/yum/pluginconf.d/fastestmirror.conf'",
+            "users:",
+            " - default",
+            " - awslogs",
+            "write_files:",
+            " - content: |",
+            "     [general]",
+            "     state_file=/var/awslogs/agent-state",
+            "     [cloud-init.log]",
+            "     file = /var/log/cloud-init.log",
+            {"Fn::Join":             [
+              "",
+                            [
+                "     log_group_name = ",
+                {"Fn::If":                 [
+                  "HasLogGroupName",
+                  {"Ref": "LogGroupName"},
+                  {"Ref": "LogGroup"}
+                ]}
+              ]
+            ]},
+            "     log_stream_name = {instance_id}/cloud-init.log",
+            "     datetime_format = %Y-%m-%d %H:%M:%S,%f",
+            "     multi_line_start_pattern = {datetime_format}",
+            "     [cloud-init-output.log]",
+            "     file = /var/log/cloud-init-output.log",
+            {"Fn::Join":             [
+              "",
+                            [
+                "     log_group_name = ",
+                {"Fn::If":                 [
+                  "HasLogGroupName",
+                  {"Ref": "LogGroupName"},
+                  {"Ref": "LogGroup"}
+                ]}
+              ]
+            ]},
+            "     log_stream_name = {instance_id}/cloud-init-output.log",
+            "     datetime_format = %Y-%m-%d %H:%M:%S,%f",
+            "     multi_line_start_pattern = {datetime_format}",
+            "     [cfn-init-cmd.log]",
+            "     file = /var/log/cfn-init-cmd.log",
+            {"Fn::Join":             [
+              "",
+                            [
+                "     log_group_name = ",
+                {"Fn::If":                 [
+                  "HasLogGroupName",
+                  {"Ref": "LogGroupName"},
+                  {"Ref": "LogGroup"}
+                ]}
+              ]
+            ]},
+            "     log_stream_name = {instance_id}/cfn-init-cmd.log",
+            "     datetime_format = %Y-%m-%d %H:%M:%S,%f",
+            "     multi_line_start_pattern = {datetime_format}",
+            "     [clm-server.log]",
+            "     file = /var/log/nexus-iq-server/clm-server.log",
+            {"Fn::Join":             [
+              "",
+                            [
+                "     log_group_name = ",
+                {"Fn::If":                 [
+                  "HasLogGroupName",
+                  {"Ref": "LogGroupName"},
+                  {"Ref": "LogGroup"}
+                ]}
+              ]
+            ]},
+            "     log_stream_name = {instance_id}/clm-server.log",
+            "     datetime_format = %Y-%m-%d %H:%M:%S,%f%z",
+            "     multi_line_start_pattern = {datetime_format}",
+            "   path: /etc/awslogs/nexus.conf",
+            "   permissions: '0644'",
+            " - content: |",
+            "     #!/bin/sh",
+            "     set -x",
+            "     wget -nv --retry-connrefused -tinf --waitretry=5 -T5 https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O /tmp/awslogs-agent-setup.py",
+            "     wget -nv --retry-connrefused -tinf --waitretry=5 -T5 https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz -O /tmp/aws-cfn-bootstrap-latest.tar.gz",
+            {"Fn::Join":             [
+              "",
+                            [
+                "     python /tmp/awslogs-agent-setup.py -n -r ",
+                {"Ref": "AWS::Region"},
+                " -c /etc/awslogs/nexus.conf"
+              ]
+            ]},
+            "     yum install -y pip",
+            "     type aws || pip install awscli",
+            "     service awslogs start",
+            "     mkdir -p /opt/aws-cfn-bootstrap/",
+            "     tar -xzf /tmp/aws-cfn-bootstrap-latest.tar.gz -C /opt/aws-cfn-bootstrap/ --strip-components=1",
+            "     cd /opt/aws-cfn-bootstrap && python setup.py install",
+            {"Fn::Join":             [
+              "",
+                            [
+                "     region=",
+                {"Ref": "AWS::Region"}
+              ]
+            ]},
+            {"Fn::Join":             [
+              "",
+                            [
+                "     stackname=",
+                {"Ref": "AWS::StackName"}
+              ]
+            ]},
+            "     python /opt/aws-cfn-bootstrap/bin/cfn-init -v --stack $stackname --resource NexusInstance --region $region",
+            "   path: /opt/cloudformation/install-aws.sh",
+            "   permissions: '0755'",
+            "runcmd:",
+            " - /opt/cloudformation/install-aws.sh"
+          ]
+        ]}}
+      },
+      "Metadata": {"AWS::CloudFormation::Init": {"config":       {
+        "files":         {
+          "/tmp/install.sh":           {
+            "source": "https://omnitruck.chef.io/install.sh",
+            "mode": "000400",
+            "owner": "root",
+            "group": "root"
+          },
+          "/var/chef/chef-repo/.chef/solo.rb":           {
+            "content": "cookbook_path [ '/var/chef/chef-repo/cookbooks' ]\nfile_cache_path '/tmp'\n",
+            "mode": "000400",
+            "owner": "root",
+            "group": "root"
+          },
+          "/var/chef/chef-repo/.chef/solo.json":           {
+            "content": {"Fn::Join":             [
+              "\n",
+                            [
+                "{",
+                "  \"run_list\": [\"recipe[nexus_iq_server]\"],",
+                "  \"java\": {",
+                "    \"jdk\": {",
+                "      \"8\": {",
+                "        \"x86_64\": {",
+                {"Fn::Join":                 [
+                  "",
+                                    [
+                    "          \"url\": \"",
+                    {"Ref": "JavaDownloadUrl"},
+                    "\","
+                  ]
+                ]},
+                {"Fn::Join":                 [
+                  "",
+                                    [
+                    "          \"checksum\": \"",
+                    {"Ref": "JavaSha256"},
+                    "\""
+                  ]
+                ]},
+                "        }",
+                "      }",
+                "    }",
+                "  },",
+                "  \"nexus_iq_server\": {",
+                {"Fn::Join":                 [
+                  "",
+                                    [
+                    "    \"version\": \"",
+                    {"Ref": "NexusIQVersion"},
+                    "\","
+                  ]
+                ]},
+                {"Fn::Join":                 [
+                  "",
+                                    [
+                    "    \"checksum\": \"",
+                    {"Ref": "NexusIQSha256"},
+                    "\""
+                  ]
+                ]},
+                "  }",
+                "}"
+              ]
+            ]},
+            "mode": "000400",
+            "owner": "root",
+            "group": "root"
+          }
+        },
+        "commands":         {
+          "01_install_chef":           {
+            "command": "bash /tmp/install.sh",
+            "cwd": "/var/chef"
+          },
+          "02_chef_solo":           {
+            "command": {"Fn::Join":             [
+              "",
+                            [
+                "chef-solo -c /var/chef/chef-repo/.chef/solo.rb -j /var/chef/chef-repo/.chef/solo.json --recipe-url ",
+                "https://github.com/sonatype/chef-nexus-iq-server/releases/download/",
+                {"Ref": "ChefRecipeVersion"},
+                "/chef-nexus-iq-server.tar.gz"
+              ]
+            ]},
+            "cwd": "/var/chef/chef-repo"
+          }
+        }
+      }}}
+    },
+    "InstanceRole":     {
+      "Type": "AWS::IAM::Role",
+      "Properties":       {
+        "AssumeRolePolicyDocument":         {
+          "Version": "2012-10-17",
+          "Statement": [          {
+            "Effect": "Allow",
+            "Principal": {"Service": ["ec2.amazonaws.com"]},
+            "Action": ["sts:AssumeRole"]
+          }]
+        },
+        "Path": "/",
+        "Policies": [        {
+          "PolicyName": "InstanceRolePolicy",
+          "PolicyDocument":           {
+            "Version": "2012-10-17",
+            "Statement": [            {
+              "Effect": "Allow",
+              "Action":               [
+                "logs:Create*",
+                "logs:PutLogEvents",
+                "s3:GetObject"
+              ],
+              "Resource": ["arn:aws:logs:*:*:*"]
+            }]
+          }
+        }]
+      }
+    },
+    "InstanceRoleInstanceProfile":     {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties":       {
+        "Path": "/",
+        "Roles": [{"Ref": "InstanceRole"}]
+      }
+    },
+    "LogGroup":     {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {"RetentionInDays": 7}
+    }
+  },
+  "Outputs":   {
+    "WebsiteURL":     {
+      "Description": "URL for Nexus IQ Server",
+      "Value": {"Fn::Join":       [
+        "",
+                [
+          "http://",
+          {"Fn::GetAtt":           [
+            "NexusInstance",
+            "PublicDnsName"
+          ]},
+          ":8070"
+        ]
+      ]}
+    },
+    "LogGroup": {"Value": {"Ref": "LogGroup"}}
+  }
+}
