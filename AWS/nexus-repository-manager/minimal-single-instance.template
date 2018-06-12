@@ -1,0 +1,144 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Nexus Repository Manager Minimal Configuration Stack.
+Mappings:
+  AmiRegionMap:
+    ap-southeast-2:
+      centos7: ami-24959b47
+    ca-central-1:
+      centos7: ami-daeb57be
+    eu-central-1:
+      centos7: ami-7cbc6e13
+    eu-west-1:
+      centos7: ami-0d063c6b
+    us-east-1:
+      centos7: ami-ae7bfdb8
+    us-east-2:
+      centos7: ami-9cbf9bf9
+    us-west-2:
+      centos7: ami-0c2aba6c
+  Defaults:
+    ChefRecipeVersion:
+      Value: release-0.5.20180307-101842.bde3aae
+    DeleteBlockDeviceOnTermination:
+      Value: 'true'
+    InstanceType:
+      Value: t2.large
+    JavaDownloadUrl:
+      Value: https://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/server-jre-8u172-linux-x64.tar.gz
+    JavaSha256:
+      Value: 3d0a5db2300423a1fd6ee25c229dbd5320d79204c73844337f5b6a082d58541f
+    LogGroupName:
+      Value: ''
+    NexusRepositoryManagerSha256:
+      Value: 9989a455bda4c62032b10b98c2a1ac40b3be78feca90edf4f714a91da08f24ac
+    NexusRepositoryManagerVersion:
+      Value: 3.9.0-01
+    SubnetAz:
+      Value: 10.0.1.0/24
+    VpcNetBlock:
+      Value: 10.0.0.0/16
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: Optional parameters
+      Parameters:
+      - LicenseS3Bucket
+      - LicenseS3Path
+      - KeyName
+    ParameterLabels:
+      KeyName:
+        default: Key pair
+      LicenseS3Bucket:
+        default: License S3 bucket
+      LicenseS3Path:
+        default: License S3 path
+Outputs:
+  LogGroup:
+    Value:
+      Fn::GetAtt:
+      - NestedStack
+      - Outputs.LogGroup
+  WebsiteURL:
+    Value:
+      Fn::GetAtt:
+      - NestedStack
+      - Outputs.WebsiteURL
+Parameters:
+  KeyName:
+    Default: ''
+    Description: Your key pair name for this region
+    Type: String
+  LicenseS3Bucket:
+    Default: ''
+    Description: (Optional) The S3 Bucket containing your Nexus Repository Manager
+      license file
+    Type: String
+  LicenseS3Path:
+    Default: ''
+    Description: (Optional) The path to your Nexus Repository Manager license file
+      within the S3 Bucket
+    Type: String
+Resources:
+  NestedStack:
+    Properties:
+      Parameters:
+        ChefRecipeVersion:
+          Fn::FindInMap:
+          - Defaults
+          - ChefRecipeVersion
+          - Value
+        DeleteBlockDeviceOnTermination:
+          Fn::FindInMap:
+          - Defaults
+          - DeleteBlockDeviceOnTermination
+          - Value
+        InstanceType:
+          Fn::FindInMap:
+          - Defaults
+          - InstanceType
+          - Value
+        JavaDownloadUrl:
+          Fn::FindInMap:
+          - Defaults
+          - JavaDownloadUrl
+          - Value
+        JavaSha256:
+          Fn::FindInMap:
+          - Defaults
+          - JavaSha256
+          - Value
+        KeyName:
+          Ref: KeyName
+        LicenseS3Bucket:
+          Ref: LicenseS3Bucket
+        LicenseS3Path:
+          Ref: LicenseS3Path
+        LogGroupName:
+          Fn::FindInMap:
+          - Defaults
+          - LogGroupName
+          - Value
+        NexusRepositoryManagerSha256:
+          Fn::FindInMap:
+          - Defaults
+          - NexusRepositoryManagerSha256
+          - Value
+        NexusRepositoryManagerVersion:
+          Fn::FindInMap:
+          - Defaults
+          - NexusRepositoryManagerVersion
+          - Value
+        SubnetAz:
+          Fn::FindInMap:
+          - Defaults
+          - SubnetAz
+          - Value
+        VpcNetBlock:
+          Fn::FindInMap:
+          - Defaults
+          - VpcNetBlock
+          - Value
+      TemplateURL: https://s3.amazonaws.com/sonatype-cloudformation-templates/nexus-repository-manager/1.0.20180612-145330.b2b7c4e/8fd847cafe81fb97c3b7ae2276b39ed9.template
+      TimeoutInMinutes: '10'
+    Type: AWS::CloudFormation::Stack
