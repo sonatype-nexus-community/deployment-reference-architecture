@@ -1,3 +1,3 @@
-## Container Management References
+## Deployment References
 
-This is a repository housing references for deploying Nexus products to container management orchestrators.
+This is a repository housing references for deploying Nexus products.
