@@ -4,7 +4,7 @@
   "Parameters":   {
     "ChefRecipeVersion":     {
       "Type": "String",
-      "Default": "release-0.4.20180629-205344.3dc1bcb",
+      "Default": "release-0.4.20180716-135024.86ebf10",
       "Description": "Version of chef cookbook to install"
     },
     "DeleteBlockDeviceOnTermination":     {
@@ -39,13 +39,13 @@
     },
     "JavaDownloadUrl":     {
       "Type": "String",
-      "Default": "https://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/server-jre-8u172-linux-x64.tar.gz",
+      "Default": "http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/server-jre-8u181-linux-x64.tar.gz",
       "MinLength": 1,
       "Description": "The Java download URL"
     },
     "JavaSha256":     {
       "Type": "String",
-      "Default": "3d0a5db2300423a1fd6ee25c229dbd5320d79204c73844337f5b6a082d58541f",
+      "Default": "678e798008c398be98ba9d39d5114a9b4151f9d3023ccdce8b56f94c5d450698",
       "MinLength": 1,
       "Description": "The Java download SHA-256 hash"
     },
@@ -61,13 +61,13 @@
     },
     "NexusIQVersion":     {
       "Type": "String",
-      "Default": "1.49.0-01",
+      "Default": "1.50.0-01",
       "MinLength": 1,
       "Description": "The Nexus IQ Server version"
     },
     "NexusIQSha256":     {
       "Type": "String",
-      "Default": "37f379a863dcd01e23c7a0d995ee1380317f156a011b375e23569fe620df71c1",
+      "Default": "628c8b4d954944788e97aa9fd9ff786b071468703b90b5617a050f7ae8792b13",
       "MinLength": 1,
       "Description": "The Nexus IQ Server SHA-256 hash"
     },
