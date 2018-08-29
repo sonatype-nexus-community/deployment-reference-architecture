@@ -4,7 +4,7 @@
   "Parameters":   {
     "ChefRecipeVersion":     {
       "Type": "String",
-      "Default": "release-0.5.20180307-101842.bde3aae",
+      "Default": "release-0.5.20180828-161555.3c23098",
       "Description": "URL of chef cookbook to install"
     },
     "LicenseS3Bucket":     {
@@ -72,25 +72,25 @@
     },
     "NexusRepositoryManagerVersion":     {
       "Type": "String",
-      "Default": "3.9.0-01",
+      "Default": "3.13.0-01",
       "MinLength": 1,
       "Description": "The Nexus Repository Manager version"
     },
     "NexusRepositoryManagerSha256":     {
       "Type": "String",
-      "Default": "9989a455bda4c62032b10b98c2a1ac40b3be78feca90edf4f714a91da08f24ac",
+      "Default": "5d1890f45e95e2ca74e62247be6b439482d2fe4562a7ec8ae905c4bdba6954ce",
       "MinLength": 1,
       "Description": "The Nexus Repository Manager SHA-256 hash"
     },
     "JavaDownloadUrl":     {
       "Type": "String",
-      "Default": "https://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/server-jre-8u172-linux-x64.tar.gz",
+      "Default": "http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/server-jre-8u181-linux-x64.tar.gz",
       "MinLength": 1,
       "Description": "The Java download URL"
     },
     "JavaSha256":     {
       "Type": "String",
-      "Default": "3d0a5db2300423a1fd6ee25c229dbd5320d79204c73844337f5b6a082d58541f",
+      "Default": "0b26c7fcfad20029e6e0989e678efcd4a81f0fe502a478b4972215533867de1b",
       "MinLength": 1,
       "Description": "The Java download SHA-256 hash"
     },
