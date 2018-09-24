@@ -139,6 +139,6 @@ Resources:
           - Defaults
           - VpcNetBlock
           - Value
-      TemplateURL: https://s3.amazonaws.com/sonatype-cloudformation-templates/nexus-repository-manager/1.0.20180918-102156.5699e1b/9efa8442233473500ddf0a4c57fd3ee6.template
+      TemplateURL: https://s3.amazonaws.com/sonatype-cloudformation-templates/nexus-repository-manager/1.0.20180924-134147.845761b/9efa8442233473500ddf0a4c57fd3ee6.template
       TimeoutInMinutes: '10'
     Type: AWS::CloudFormation::Stack
