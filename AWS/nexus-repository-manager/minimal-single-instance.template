@@ -24,9 +24,9 @@ Mappings:
     InstanceType:
       Value: t2.large
     JavaDownloadUrl:
-      Value: http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/server-jre-8u181-linux-x64.tar.gz
+      Value: http://download.oracle.com/otn-pub/java/jdk/8u192-b12/750e1c8617c5452694857ad95c3ee230/server-jre-8u192-linux-x64.tar.gz
     JavaSha256:
-      Value: 0b26c7fcfad20029e6e0989e678efcd4a81f0fe502a478b4972215533867de1b
+      Value: 3d811a5ec65dc6fc261f488757bae86ecfe285a79992363b016f60cdb4dbe7e6
     LogGroupName:
       Value: ''
     NexusRepositoryManagerSha256:
@@ -139,6 +139,6 @@ Resources:
           - Defaults
           - VpcNetBlock
           - Value
-      TemplateURL: https://s3.amazonaws.com/sonatype-cloudformation-templates/nexus-repository-manager/1.0.20181004-100736.abd0493/9efa8442233473500ddf0a4c57fd3ee6.template
+      TemplateURL: https://s3.amazonaws.com/sonatype-cloudformation-templates/nexus-repository-manager/1.0.20181016-190844.2a1abd8/bd06942e870e980aa74e0ba324debb7c.template
       TimeoutInMinutes: '10'
     Type: AWS::CloudFormation::Stack

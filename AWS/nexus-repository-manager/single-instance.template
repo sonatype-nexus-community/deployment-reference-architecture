@@ -2,6 +2,24 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Nexus Repository Manager Single Instance Stack.",
   "Parameters":   {
+    "VpcNetBlock":     {
+      "Type": "String",
+      "Default": "10.0.0.0/16",
+      "Description": "The network address block for the VPC",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+    "SubnetAz":     {
+      "Type": "String",
+      "Default": "10.0.1.0/24",
+      "Description": "The network address block for the subnet",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
     "ChefRecipeVersion":     {
       "Type": "String",
       "Default": "release-0.5.20180828-161555.3c23098",
@@ -21,24 +39,6 @@
       "Type": "String",
       "Default": "",
       "Description": "Your key pair name for this region"
-    },
-    "VpcNetBlock":     {
-      "Type": "String",
-      "Default": "10.0.0.0/16",
-      "Description": "The network address block for the VPC",
-      "MinLength": "9",
-      "MaxLength": "18",
-      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
-      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x."
-    },
-    "SubnetAz":     {
-      "Type": "String",
-      "Default": "10.0.1.0/24",
-      "Description": "The network address block for the subnet",
-      "MinLength": "9",
-      "MaxLength": "18",
-      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
-      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x."
     },
     "InstanceType":     {
       "Type": "String",
@@ -84,13 +84,13 @@
     },
     "JavaDownloadUrl":     {
       "Type": "String",
-      "Default": "http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/server-jre-8u181-linux-x64.tar.gz",
+      "Default": "http://download.oracle.com/otn-pub/java/jdk/8u192-b12/750e1c8617c5452694857ad95c3ee230/server-jre-8u192-linux-x64.tar.gz",
       "MinLength": 1,
       "Description": "The Java download URL"
     },
     "JavaSha256":     {
       "Type": "String",
-      "Default": "0b26c7fcfad20029e6e0989e678efcd4a81f0fe502a478b4972215533867de1b",
+      "Default": "3d811a5ec65dc6fc261f488757bae86ecfe285a79992363b016f60cdb4dbe7e6",
       "MinLength": 1,
       "Description": "The Java download SHA-256 hash"
     },
@@ -100,20 +100,6 @@
       "Description": "A custom log group name"
     }
   },
-  "Conditions":   {
-    "HasKeyName": {"Fn::Not": [{"Fn::Equals":     [
-      "",
-      {"Ref": "KeyName"}
-    ]}]},
-    "HasLogGroupName": {"Fn::Not": [{"Fn::Equals":     [
-      "",
-      {"Ref": "LogGroupName"}
-    ]}]},
-    "HasLicense": {"Fn::Not": [{"Fn::Equals":     [
-      "",
-      {"Ref": "LicenseS3Bucket"}
-    ]}]}
-  },
   "Metadata": {"AWS::CloudFormation::Interface":   {
     "ParameterGroups":     [
             {
@@ -122,13 +108,6 @@
           "LicenseS3Bucket",
           "LicenseS3Path",
           "KeyName"
-        ]
-      },
-            {
-        "Label": {"default": "Network configuration"},
-        "Parameters":         [
-          "VpcNetBlock",
-          "SubnetAz"
         ]
       },
             {
@@ -168,500 +147,59 @@
       "NexusRepositoryManagerSha256": {"default": "Nexus Repository Manager SHA-256"},
       "JavaDownloadUrl": {"default": "Java Download Url"},
       "JavaSha256": {"default": "Java SHA-256"},
-      "VpcNetBlock": {"default": "VPC network block"},
-      "SubnetAz": {"default": "Subnet network block"},
       "LogGroupName": {"default": "CloudWatch log group name"}
     }
   }},
-  "Mappings": {"AmiRegionMap":   {
-    "us-east-1": {"centos7": "ami-ae7bfdb8"},
-    "us-east-2": {"centos7": "ami-9cbf9bf9"},
-    "us-west-2": {"centos7": "ami-0c2aba6c"},
-    "eu-west-1": {"centos7": "ami-0d063c6b"},
-    "eu-central-1": {"centos7": "ami-7cbc6e13"},
-    "ap-southeast-2": {"centos7": "ami-24959b47"},
-    "ca-central-1": {"centos7": "ami-daeb57be"}
-  }},
   "Resources":   {
-    "Vpc":     {
-      "Type": "AWS::EC2::VPC",
+    "VpcStack":     {
+      "Type": "AWS::CloudFormation::Stack",
       "Properties":       {
-        "CidrBlock": {"Ref": "VpcNetBlock"},
-        "InstanceTenancy": "default",
-        "EnableDnsSupport": "true",
-        "EnableDnsHostnames": "true",
-        "Tags":         [
-                    {
-            "Key": "Name",
-            "Value": {"Fn::Join":             [
-              "-",
-                            [
-                "vpc",
-                {"Ref": "AWS::StackName"}
-              ]
-            ]}
-          },
-                    {
-            "Key": "Platform",
-            "Value": "nexus-repository-manager"
-          },
-                    {
-            "Key": "Version",
-            "Value": {"Ref": "NexusRepositoryManagerVersion"}
-          }
-        ]
-      }
-    },
-    "InstanceSecurityGroup":     {
-      "Type": "AWS::EC2::SecurityGroup",
-      "Properties":       {
-        "GroupDescription": "Nexus Repository Manager EC2 Security Group",
-        "SecurityGroupIngress":         [
-                    {
-            "IpProtocol": "tcp",
-            "FromPort": "22",
-            "ToPort": "22",
-            "CidrIp": "0.0.0.0/0"
-          },
-                    {
-            "IpProtocol": "tcp",
-            "FromPort": "8081",
-            "ToPort": "8081",
-            "CidrIp": "0.0.0.0/0"
-          }
-        ],
-        "Tags":         [
-                    {
-            "Key": "Name",
-            "Value": {"Fn::Join":             [
-              "-",
-                            [
-                "sg",
-                {"Ref": "AWS::StackName"}
-              ]
-            ]}
-          },
-                    {
-            "Key": "Platform",
-            "Value": "nexus-repository-manager"
-          },
-                    {
-            "Key": "Version",
-            "Value": {"Ref": "NexusRepositoryManagerVersion"}
-          }
-        ],
-        "VpcId": {"Ref": "Vpc"}
-      }
-    },
-    "InstanceSubnet":     {
-      "Type": "AWS::EC2::Subnet",
-      "Properties":       {
-        "CidrBlock": {"Ref": "SubnetAz"},
-        "MapPublicIpOnLaunch": true,
-        "AvailabilityZone": {"Fn::Select":         [
-          "0",
-          {"Fn::GetAZs": ""}
-        ]},
-        "VpcId": {"Ref": "Vpc"},
-        "Tags":         [
-                    {
-            "Key": "Name",
-            "Value": {"Fn::Join":             [
-              "-",
-                            [
-                "sn",
-                {"Ref": "AWS::StackName"}
-              ]
-            ]}
-          },
-                    {
-            "Key": "Platform",
-            "Value": "nexus-repository-manager"
-          },
-                    {
-            "Key": "Version",
-            "Value": {"Ref": "NexusRepositoryManagerVersion"}
-          }
-        ]
-      }
-    },
-    "SubnetRouteTableAssociation":     {
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "Properties":       {
-        "RouteTableId": {"Ref": "RouteTable"},
-        "SubnetId": {"Ref": "InstanceSubnet"}
-      }
-    },
-    "InternetGateway":     {
-      "Type": "AWS::EC2::InternetGateway",
-      "Properties": {"Tags":       [
-                {
-          "Key": "Name",
-          "Value": {"Fn::Join":           [
-            "-",
-                        [
-              "ig",
-              {"Ref": "AWS::StackName"}
-            ]
-          ]}
+        "Parameters":         {
+          "VpcNetBlock": {"Ref": "VpcNetBlock"},
+          "SubnetAz": {"Ref": "SubnetAz"},
+          "NexusRepositoryManagerVersion": {"Ref": "NexusRepositoryManagerVersion"}
         },
-                {
-          "Key": "Platform",
-          "Value": "nexus-repository-manager"
+        "TemplateURL": "single-instance-vpc.template",
+        "TimeoutInMinutes": "10"
+      }
+    },
+    "AppStack":     {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties":       {
+        "Parameters":         {
+          "ChefRecipeVersion": {"Ref": "ChefRecipeVersion"},
+          "DeleteBlockDeviceOnTermination": {"Ref": "DeleteBlockDeviceOnTermination"},
+          "InstanceSubnet": {"Fn::GetAtt":           [
+            "VpcStack",
+            "Outputs.InstanceSubnet"
+          ]},
+          "InstanceSecurityGroup": {"Fn::GetAtt":           [
+            "VpcStack",
+            "Outputs.InstanceSecurityGroup"
+          ]},
+          "InstanceType": {"Ref": "InstanceType"},
+          "LogGroupName": {"Ref": "LogGroupName"},
+          "JavaDownloadUrl": {"Ref": "JavaDownloadUrl"},
+          "JavaSha256": {"Ref": "JavaSha256"},
+          "KeyName": {"Ref": "KeyName"},
+          "LicenseS3Bucket": {"Ref": "LicenseS3Bucket"},
+          "LicenseS3Path": {"Ref": "LicenseS3Path"},
+          "NexusRepositoryManagerVersion": {"Ref": "NexusRepositoryManagerVersion"},
+          "NexusRepositoryManagerSha256": {"Ref": "NexusRepositoryManagerSha256"}
         },
-                {
-          "Key": "Version",
-          "Value": {"Ref": "NexusRepositoryManagerVersion"}
-        }
-      ]}
-    },
-    "VPCGatewayAttachment":     {
-      "Type": "AWS::EC2::VPCGatewayAttachment",
-      "Properties":       {
-        "VpcId": {"Ref": "Vpc"},
-        "InternetGatewayId": {"Ref": "InternetGateway"}
+        "TemplateURL": "single-instance-app.template",
+        "TimeoutInMinutes": "20"
       }
-    },
-    "DefaultRoute":     {
-      "Type": "AWS::EC2::Route",
-      "Properties":       {
-        "DestinationCidrBlock": "0.0.0.0/0",
-        "RouteTableId": {"Ref": "RouteTable"},
-        "GatewayId": {"Ref": "InternetGateway"}
-      },
-      "DependsOn": "VPCGatewayAttachment"
-    },
-    "RouteTable":     {
-      "Type": "AWS::EC2::RouteTable",
-      "Properties":       {
-        "VpcId": {"Ref": "Vpc"},
-        "Tags":         [
-                    {
-            "Key": "Name",
-            "Value": {"Fn::Join":             [
-              "-",
-                            [
-                "rt",
-                {"Ref": "AWS::StackName"}
-              ]
-            ]}
-          },
-                    {
-            "Key": "Platform",
-            "Value": "nexus-repository-manager"
-          },
-                    {
-            "Key": "Version",
-            "Value": {"Ref": "NexusRepositoryManagerVersion"}
-          }
-        ]
-      }
-    },
-    "NexusInstance":     {
-      "Type": "AWS::EC2::Instance",
-      "Properties":       {
-        "IamInstanceProfile": {"Ref": "InstanceRoleInstanceProfile"},
-        "ImageId": {"Fn::FindInMap":         [
-          "AmiRegionMap",
-          {"Ref": "AWS::Region"},
-          "centos7"
-        ]},
-        "InstanceType": {"Ref": "InstanceType"},
-        "KeyName": {"Fn::If":         [
-          "HasKeyName",
-          {"Ref": "KeyName"},
-          {"Ref": "AWS::NoValue"}
-        ]},
-        "NetworkInterfaces": [        {
-          "DeleteOnTermination": "true",
-          "DeviceIndex": 0,
-          "SubnetId": {"Ref": "InstanceSubnet"},
-          "GroupSet": [{"Ref": "InstanceSecurityGroup"}],
-          "AssociatePublicIpAddress": "true"
-        }],
-        "BlockDeviceMappings": [        {
-          "DeviceName": "/dev/sda1",
-          "Ebs": {"DeleteOnTermination": {"Ref": "DeleteBlockDeviceOnTermination"}}
-        }],
-        "Tags":         [
-                    {
-            "Key": "Name",
-            "Value": {"Fn::Join":             [
-              "-",
-                            [
-                "i",
-                {"Ref": "AWS::StackName"}
-              ]
-            ]}
-          },
-                    {
-            "Key": "Platform",
-            "Value": "nexus-repository-manager"
-          },
-                    {
-            "Key": "Version",
-            "Value": {"Ref": "NexusRepositoryManagerVersion"}
-          }
-        ],
-        "UserData": {"Fn::Base64": {"Fn::Join":         [
-          "\n",
-                    [
-            "#cloud-config",
-            "packages:",
-            " - wget",
-            " - python",
-            " - epel-release",
-            "bootcmd:",
-            " - 'echo [main] > /etc/yum/pluginconf.d/fastestmirror.conf'",
-            " - 'echo enabled=0 >> /etc/yum/pluginconf.d/fastestmirror.conf'",
-            "users:",
-            " - default",
-            " - awslogs",
-            "runcmd:",
-            " - wget -nv --retry-connrefused -tinf --waitretry=5 -T5 https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz -O /tmp/aws-cfn-bootstrap-latest.tar.gz",
-            " - mkdir -p /opt/aws-cfn-bootstrap/ && tar -xzf /tmp/aws-cfn-bootstrap-latest.tar.gz -C /opt/aws-cfn-bootstrap/ --strip-components=1",
-            " - yum install -y python2-pip",
-            " - cd /opt/aws-cfn-bootstrap && python setup.py install && pip install boto3",
-            {"Fn::Join":             [
-              "",
-                            [
-                " - python /opt/aws-cfn-bootstrap/bin/cfn-init -v --stack ",
-                {"Ref": "AWS::StackName"},
-                " --resource NexusInstance --region ",
-                {"Ref": "AWS::Region"}
-              ]
-            ]}
-          ]
-        ]}}
-      },
-      "Metadata": {"AWS::CloudFormation::Init": {"config":       {
-        "files":         {
-          "/tmp/install.sh":           {
-            "source": "https://omnitruck.chef.io/install.sh",
-            "mode": "000400",
-            "owner": "root",
-            "group": "root"
-          },
-          "/var/chef/chef-repo/.chef/solo.rb":           {
-            "content": "file_cache_path '/tmp'\n",
-            "mode": "000400",
-            "owner": "root",
-            "group": "root"
-          },
-          "/var/chef/chef-repo/.chef/solo.json":           {
-            "content": {"Fn::Join":             [
-              "\n",
-                            [
-                "{",
-                "  \"run_list\": [\"recipe[nexus_repository_manager::aws]\"],",
-                "  \"java\": {",
-                "    \"jdk\": {",
-                "      \"8\": {",
-                "        \"x86_64\": {",
-                {"Fn::Join":                 [
-                  "",
-                                    [
-                    "          \"url\": \"",
-                    {"Ref": "JavaDownloadUrl"},
-                    "\","
-                  ]
-                ]},
-                {"Fn::Join":                 [
-                  "",
-                                    [
-                    "          \"checksum\": \"",
-                    {"Ref": "JavaSha256"},
-                    "\""
-                  ]
-                ]},
-                "        }",
-                "      }",
-                "    }",
-                "  },",
-                "  \"nexus_repository_manager\": {",
-                {"Fn::Join":                 [
-                  "",
-                                    [
-                    "    \"version\": \"",
-                    {"Ref": "NexusRepositoryManagerVersion"},
-                    "\","
-                  ]
-                ]},
-                {"Fn::Join":                 [
-                  "",
-                                    [
-                    "    \"nexus_download_sha256\": \"",
-                    {"Ref": "NexusRepositoryManagerSha256"},
-                    "\","
-                  ]
-                ]},
-                {"Fn::If":                 [
-                  "HasLicense",
-                  {"Fn::Join":                   [
-                    "",
-                                        [
-                      "    \"license_s3_bucket\": \"",
-                      {"Ref": "LicenseS3Bucket"},
-                      "\","
-                    ]
-                  ]},
-                  ""
-                ]},
-                {"Fn::If":                 [
-                  "HasLicense",
-                  {"Fn::Join":                   [
-                    "",
-                                        [
-                      "    \"license_s3_path\": \"",
-                      {"Ref": "LicenseS3Path"},
-                      "\","
-                    ]
-                  ]},
-                  ""
-                ]},
-                "    \"properties\": {",
-                "        \"clustered\": false",
-                "    },",
-                "    \"aws\": {",
-                {"Fn::Join":                 [
-                  "",
-                                    [
-                    "      \"log_group\": \"",
-                    {"Fn::If":                     [
-                      "HasLogGroupName",
-                      {"Ref": "LogGroupName"},
-                      {"Ref": "LogGroup"}
-                    ]},
-                    "\","
-                  ]
-                ]},
-                {"Fn::Join":                 [
-                  "",
-                                    [
-                    "      \"region\": \"",
-                    {"Ref": "AWS::Region"},
-                    "\","
-                  ]
-                ]},
-                {"Fn::Join":                 [
-                  "",
-                                    [
-                    "      \"stack_name\": \"",
-                    {"Ref": "AWS::StackName"},
-                    "\""
-                  ]
-                ]},
-                "    }",
-                "  }",
-                "}"
-              ]
-            ]},
-            "mode": "000400",
-            "owner": "root",
-            "group": "root"
-          }
-        },
-        "commands":         {
-          "01_install_chef":           {
-            "command": "bash /tmp/install.sh",
-            "cwd": "/var/chef"
-          },
-          "02_chef_solo":           {
-            "command": {"Fn::Join":             [
-              "",
-                            [
-                "chef-solo -c /var/chef/chef-repo/.chef/solo.rb -j /var/chef/chef-repo/.chef/solo.json --recipe-url ",
-                "https://github.com/sonatype/chef-nexus-repository-manager/releases/download/",
-                {"Ref": "ChefRecipeVersion"},
-                "/chef-nexus-repository-manager.tar.gz"
-              ]
-            ]},
-            "cwd": "/var/chef/chef-repo"
-          }
-        }
-      }}}
-    },
-    "InstanceRole":     {
-      "Type": "AWS::IAM::Role",
-      "Properties":       {
-        "AssumeRolePolicyDocument":         {
-          "Version": "2012-10-17",
-          "Statement": [          {
-            "Effect": "Allow",
-            "Principal": {"Service": ["ec2.amazonaws.com"]},
-            "Action": ["sts:AssumeRole"]
-          }]
-        },
-        "Path": "/",
-        "Policies": [        {
-          "PolicyName": "InstanceRolePolicy",
-          "PolicyDocument":           {
-            "Version": "2012-10-17",
-            "Statement":             [
-                            {
-                "Effect": "Allow",
-                "Action":                 [
-                  "logs:Create*",
-                  "logs:PutLogEvents",
-                  "s3:GetObject"
-                ],
-                "Resource":                 [
-                  "arn:aws:logs:*:*:*",
-                  {"Fn::Join":                   [
-                    "",
-                                        [
-                      "arn:aws:s3:::",
-                      {"Ref": "LicenseS3Bucket"},
-                      "/",
-                      {"Ref": "LicenseS3Path"}
-                    ]
-                  ]}
-                ]
-              },
-                            {
-                "Effect": "Allow",
-                "Action":                 [
-                  "ec2:DescribeInstances",
-                  "autoscaling:DescribeAutoScalingInstances",
-                  "autoscaling:DescribeTags",
-                  "elasticloadbalancing:DescribeInstanceHealth",
-                  "elasticloadbalancing:DescribeLoadBalancers",
-                  "elasticloadbalancing:DescribeTags"
-                ],
-                "Resource": ["*"]
-              }
-            ]
-          }
-        }]
-      }
-    },
-    "InstanceRoleInstanceProfile":     {
-      "Type": "AWS::IAM::InstanceProfile",
-      "Properties":       {
-        "Path": "/",
-        "Roles": [{"Ref": "InstanceRole"}]
-      }
-    },
-    "LogGroup":     {
-      "Type": "AWS::Logs::LogGroup",
-      "Properties": {"RetentionInDays": 7}
     }
   },
   "Outputs":   {
-    "WebsiteURL":     {
-      "Description": "URL for Nexus Repository Server",
-      "Value": {"Fn::Join":       [
-        "",
-                [
-          "http://",
-          {"Fn::GetAtt":           [
-            "NexusInstance",
-            "PublicDnsName"
-          ]},
-          ":8081"
-        ]
-      ]}
-    },
-    "LogGroup": {"Value": {"Ref": "LogGroup"}}
+    "WebsiteURL": {"Value": {"Fn::GetAtt":     [
+      "AppStack",
+      "Outputs.WebsiteURL"
+    ]}},
+    "LogGroup": {"Value": {"Fn::GetAtt":     [
+      "AppStack",
+      "Outputs.LogGroup"
+    ]}}
   }
 }
