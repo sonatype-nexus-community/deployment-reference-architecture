@@ -1,0 +1,546 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Nexus Repository Manager Single Instance App Stack.",
+  "Parameters": {
+    "InstanceSecurityGroup": {
+      "Type": "String"
+    },
+    "InstanceSubnet": {
+      "Type": "String"
+    },
+    "ChefRecipeVersion": {
+      "Type": "String"
+    },
+    "LicenseS3Bucket": {
+      "Type": "String"
+    },
+    "LicenseS3Path": {
+      "Type": "String"
+    },
+    "KeyName": {
+      "Type": "String"
+    },
+    "InstanceType": {
+      "Type": "String"
+    },
+    "DeleteBlockDeviceOnTermination": {
+      "Type": "String"
+    },
+    "NexusRepositoryManagerVersion": {
+      "Type": "String"
+    },
+    "NexusRepositoryManagerSha256": {
+      "Type": "String"
+    },
+    "JavaDownloadUrl": {
+      "Type": "String"
+    },
+    "JavaSha256": {
+      "Type": "String"
+    },
+    "LogGroupName": {
+      "Type": "String"
+    }
+  },
+  "Conditions": {
+    "HasKeyName": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "KeyName"
+            }
+          ]
+        }
+      ]
+    },
+    "HasLogGroupName": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "LogGroupName"
+            }
+          ]
+        }
+      ]
+    },
+    "HasLicense": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "LicenseS3Bucket"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Mappings": {
+    "AmiRegionMap": {
+      "us-east-1": {
+        "centos7": "ami-ae7bfdb8"
+      },
+      "us-east-2": {
+        "centos7": "ami-9cbf9bf9"
+      },
+      "us-west-2": {
+        "centos7": "ami-0c2aba6c"
+      },
+      "eu-west-1": {
+        "centos7": "ami-0d063c6b"
+      },
+      "eu-central-1": {
+        "centos7": "ami-7cbc6e13"
+      },
+      "ap-southeast-2": {
+        "centos7": "ami-24959b47"
+      },
+      "ca-central-1": {
+        "centos7": "ami-daeb57be"
+      }
+    }
+  },
+  "Resources": {
+    "NexusInstance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "IamInstanceProfile": {
+          "Ref": "InstanceRoleInstanceProfile"
+        },
+        "ImageId": {
+          "Fn::FindInMap": [
+            "AmiRegionMap",
+            {
+              "Ref": "AWS::Region"
+            },
+            "centos7"
+          ]
+        },
+        "InstanceType": {
+          "Ref": "InstanceType"
+        },
+        "KeyName": {
+          "Fn::If": [
+            "HasKeyName",
+            {
+              "Ref": "KeyName"
+            },
+            {
+              "Ref": "AWS::NoValue"
+            }
+          ]
+        },
+        "NetworkInterfaces": [
+          {
+            "DeleteOnTermination": "true",
+            "DeviceIndex":0,
+            "SubnetId": {
+              "Ref": "InstanceSubnet"
+            },
+            "GroupSet": [
+              {
+                "Ref": "InstanceSecurityGroup"
+              }
+            ],
+            "AssociatePublicIpAddress": "true"
+          }
+        ],
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sda1",
+            "Ebs": {
+              "DeleteOnTermination": {
+                "Ref": "DeleteBlockDeviceOnTermination"
+              }
+            }
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  "i",
+                  {
+                    "Ref": "AWS::StackName"
+                  }
+                ]
+              ]
+            }
+          },
+          {
+            "Key": "Platform",
+            "Value": "nexus-repository-manager"
+          },
+          {
+            "Key": "Version",
+            "Value": {
+              "Ref": "NexusRepositoryManagerVersion"
+            }
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "\n",
+              [
+                "#cloud-config",
+                "packages:",
+                " - wget",
+                " - python",
+                " - epel-release",
+                "bootcmd:",
+                " - 'echo [main] > /etc/yum/pluginconf.d/fastestmirror.conf'",
+                " - 'echo enabled=0 >> /etc/yum/pluginconf.d/fastestmirror.conf'",
+                "users:",
+                " - default",
+                " - awslogs",
+                "runcmd:",
+                " - wget -nv --retry-connrefused -tinf --waitretry=5 -T5 https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz -O /tmp/aws-cfn-bootstrap-latest.tar.gz",
+                " - mkdir -p /opt/aws-cfn-bootstrap/ && tar -xzf /tmp/aws-cfn-bootstrap-latest.tar.gz -C /opt/aws-cfn-bootstrap/ --strip-components=1",
+                " - yum install -y python2-pip",
+                " - cd /opt/aws-cfn-bootstrap && python setup.py install && pip install boto3",
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      " - python /opt/aws-cfn-bootstrap/bin/cfn-init -v --stack ",
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      " --resource NexusInstance --region ",
+                      {
+                        "Ref": "AWS::Region"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Init": {
+          "config": {
+            "files": {
+              "/tmp/install.sh": {
+                "source": "https://omnitruck.chef.io/install.sh",
+                "mode": "000400",
+                "owner": "root",
+                "group": "root"
+              },
+              "/var/chef/chef-repo/.chef/solo.rb": {
+                "content": "file_cache_path '/tmp'\n",
+                "mode": "000400",
+                "owner": "root",
+                "group": "root"
+              },
+              "/var/chef/chef-repo/.chef/solo.json": {
+                "content": {
+                  "Fn::Join": [
+                    "\n",
+                    [
+                      "{",
+                      "  \"run_list\": [\"recipe[nexus_repository_manager::aws]\"],",
+                      "  \"java\": {",
+                      "    \"jdk\": {",
+                      "      \"8\": {",
+                      "        \"x86_64\": {",
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "          \"url\": \"",
+                            {
+                              "Ref": "JavaDownloadUrl"
+                            },
+                            "\","
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "          \"checksum\": \"",
+                            {
+                              "Ref": "JavaSha256"
+                            },
+                            "\""
+                          ]
+                        ]
+                      },
+                      "        }",
+                      "      }",
+                      "    }",
+                      "  },",
+                      "  \"nexus_repository_manager\": {",
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "    \"version\": \"",
+                            {
+                              "Ref": "NexusRepositoryManagerVersion"
+                            },
+                            "\","
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "    \"nexus_download_sha256\": \"",
+                            {
+                              "Ref": "NexusRepositoryManagerSha256"
+                            },
+                            "\","
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::If": [
+                          "HasLicense",
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "    \"license_s3_bucket\": \"",
+                                {
+                                  "Ref": "LicenseS3Bucket"
+                                },
+                                "\","
+                              ]
+                            ]
+                          },
+                          ""
+                        ]
+                      },
+                      {
+                        "Fn::If": [
+                          "HasLicense",
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "    \"license_s3_path\": \"",
+                                {
+                                  "Ref": "LicenseS3Path"
+                                },
+                                "\","
+                              ]
+                            ]
+                          },
+                          ""
+                        ]
+                      },
+                      "    \"properties\": {",
+                      "        \"clustered\": false",
+                      "    },",
+                      "    \"aws\": {",
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "      \"log_group\": \"",
+                            {
+                              "Fn::If": [
+                                "HasLogGroupName",
+                                {
+                                  "Ref": "LogGroupName"
+                                },
+                                {
+                                  "Ref": "LogGroup"
+                                }
+                              ]
+                            },
+                            "\","
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "      \"region\": \"",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            "\","
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "      \"stack_name\": \"",
+                            {
+                              "Ref": "AWS::StackName"
+                            },
+                            "\""
+                          ]
+                        ]
+                      },
+                      "    }",
+                      "  }",
+                      "}"
+                    ]
+                  ]
+                },
+                "mode": "000400",
+                "owner": "root",
+                "group": "root"
+              }
+            },
+            "commands": {
+              "01_install_chef": {
+                "command": "bash /tmp/install.sh",
+                "cwd": "/var/chef"
+              },
+              "02_chef_solo": {
+                "command": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "chef-solo -c /var/chef/chef-repo/.chef/solo.rb -j /var/chef/chef-repo/.chef/solo.json --recipe-url ",
+                      "https://github.com/sonatype/chef-nexus-repository-manager/releases/download/",
+                      {
+                        "Ref": "ChefRecipeVersion"
+                      },
+                      "/chef-nexus-repository-manager.tar.gz"
+                    ]
+                  ]
+                },
+                "cwd": "/var/chef/chef-repo"
+              }
+            }
+          }
+        }
+      }
+    },
+    "InstanceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "InstanceRolePolicy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:Create*",
+                    "logs:PutLogEvents",
+                    "s3:GetObject"
+                  ],
+                  "Resource": [
+                    "arn:aws:logs:*:*:*",
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref": "LicenseS3Bucket"
+                          },
+                          "/",
+                          {
+                            "Ref": "LicenseS3Path"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ec2:DescribeInstances",
+                    "autoscaling:DescribeAutoScalingInstances",
+                    "autoscaling:DescribeTags",
+                    "elasticloadbalancing:DescribeInstanceHealth",
+                    "elasticloadbalancing:DescribeLoadBalancers",
+                    "elasticloadbalancing:DescribeTags"
+                  ],
+                  "Resource": [
+                    "*"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "InstanceRoleInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "InstanceRole"
+          }
+        ]
+      }
+    },
+    "LogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "RetentionInDays":7
+      }
+    }
+  },
+  "Outputs": {
+    "WebsiteURL": {
+      "Description": "URL for Nexus Repository Server",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "http://",
+            {
+              "Fn::GetAtt": [
+                "NexusInstance",
+                "PublicDnsName"
+              ]
+            },
+            ":8081"
+          ]
+        ]
+      }
+    },
+    "LogGroup": {
+      "Value": {
+        "Ref": "LogGroup"
+      }
+    }
+  }
+}
