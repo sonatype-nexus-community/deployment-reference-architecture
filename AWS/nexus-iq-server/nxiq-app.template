@@ -8,32 +8,74 @@
     "InstanceSubnet": {
       "Type": "String"
     },
-    "ChefRecipeVersion": {
-      "Type": "String"
+    "ChefRecipeVersion":     {
+      "Type": "String",
+      "Default": "release-0.4.20180928-160558.8ffdd14",
+      "Description": "Version of chef cookbook to install"
     },
-    "DeleteBlockDeviceOnTermination": {
-      "Type": "String"
+    "DeleteBlockDeviceOnTermination":     {
+      "Type": "String",
+      "Default": "false",
+      "AllowedValues":       [
+        "false",
+        "true"
+      ],
+      "MinLength": 1,
+      "Description": "Automatically delete the instance's root block device on instance termination."
     },
-    "InstanceType": {
-      "Type": "String"
+    "InstanceType":     {
+      "Type": "String",
+      "Default": "t2.large",
+      "AllowedValues":       [
+        "t2.large",
+        "t2.xlarge",
+        "t2.2xlarge",
+        "m4.large",
+        "m4.xlarge",
+        "m4.2xlarge",
+        "m4.4xlarge",
+        "m4.10xlarge",
+        "m4.16xlarge",
+        "m3.large",
+        "m3.xlarge",
+        "m3.2xlarge"
+      ],
+      "MinLength": 1,
+      "Description": "The instance type"
     },
-    "JavaDownloadUrl": {
-      "Type": "String"
+    "JavaDownloadUrl":     {
+      "Type": "String",
+      "Default": "http://download.oracle.com/otn-pub/java/jdk/8u192-b12/750e1c8617c5452694857ad95c3ee230/server-jre-8u192-linux-x64.tar.gz",
+      "MinLength": 1,
+      "Description": "The Java download URL"
     },
-    "JavaSha256": {
-      "Type": "String"
+    "JavaSha256":     {
+      "Type": "String",
+      "Default": "3d811a5ec65dc6fc261f488757bae86ecfe285a79992363b016f60cdb4dbe7e6",
+      "MinLength": 1,
+      "Description": "The Java download SHA-256 hash"
     },
-    "KeyName": {
-      "Type": "String"
+    "KeyName":     {
+      "Type": "String",
+      "Default": "",
+      "Description": "Your key pair name for this region"
     },
-    "LogGroupName": {
-      "Type": "String"
+    "LogGroupName":     {
+      "Type": "String",
+      "Default": "",
+      "Description": "A custom log group name"
     },
-    "NexusIQVersion": {
-      "Type": "String"
+    "NexusIQVersion":     {
+      "Type": "String",
+      "Default": "1.53.0-01",
+      "MinLength": 1,
+      "Description": "The Nexus IQ Server version"
     },
-    "NexusIQSha256": {
-      "Type": "String"
+    "NexusIQSha256":     {
+      "Type": "String",
+      "Default": "d99c96285393cf6edc1d0034671861a5c40ad7dd8b9e688d0c6506a2fd696317",
+      "MinLength": 1,
+      "Description": "The Nexus IQ Server SHA-256 hash"
     }
   },
   "Mappings": {
