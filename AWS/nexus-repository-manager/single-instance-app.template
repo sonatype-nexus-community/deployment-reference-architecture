@@ -8,38 +8,84 @@
     "InstanceSubnet": {
       "Type": "String"
     },
-    "ChefRecipeVersion": {
-      "Type": "String"
+    "ChefRecipeVersion":     {
+      "Type": "String",
+      "Default": "release-0.5.20180828-231916.863899c",
+      "Description": "URL of chef cookbook to install"
     },
-    "LicenseS3Bucket": {
-      "Type": "String"
+    "LicenseS3Bucket":     {
+      "Type": "String",
+      "Default": "",
+      "Description": "(Optional) The S3 Bucket containing your Nexus Repository Manager license file"
     },
-    "LicenseS3Path": {
-      "Type": "String"
+    "LicenseS3Path":     {
+      "Type": "String",
+      "Default": "",
+      "Description": "(Optional) The path to your Nexus Repository Manager license file within the S3 Bucket"
     },
-    "KeyName": {
-      "Type": "String"
+    "KeyName":     {
+      "Type": "String",
+      "Default": "",
+      "Description": "Your key pair name for this region"
     },
-    "InstanceType": {
-      "Type": "String"
+    "InstanceType":     {
+      "Type": "String",
+      "Default": "t2.large",
+      "AllowedValues":       [
+        "t2.large",
+        "t2.xlarge",
+        "t2.2xlarge",
+        "m4.large",
+        "m4.xlarge",
+        "m4.2xlarge",
+        "m4.4xlarge",
+        "m4.10xlarge",
+        "m4.16xlarge",
+        "m3.large",
+        "m3.xlarge",
+        "m3.2xlarge"
+      ],
+      "MinLength": 1,
+      "Description": "The instance type"
     },
-    "DeleteBlockDeviceOnTermination": {
-      "Type": "String"
+    "DeleteBlockDeviceOnTermination":     {
+      "Type": "String",
+      "Default": "false",
+      "AllowedValues":       [
+        "false",
+        "true"
+      ],
+      "MinLength": 1,
+      "Description": "Automatically delete the instance's root block device on instance termination."
     },
-    "NexusRepositoryManagerVersion": {
-      "Type": "String"
+    "NexusRepositoryManagerVersion":     {
+      "Type": "String",
+      "Default": "3.13.0-01",
+      "MinLength": 1,
+      "Description": "The Nexus Repository Manager version"
     },
-    "NexusRepositoryManagerSha256": {
-      "Type": "String"
+    "NexusRepositoryManagerSha256":     {
+      "Type": "String",
+      "Default": "5d1890f45e95e2ca74e62247be6b439482d2fe4562a7ec8ae905c4bdba6954ce",
+      "MinLength": 1,
+      "Description": "The Nexus Repository Manager SHA-256 hash"
     },
-    "JavaDownloadUrl": {
-      "Type": "String"
+    "JavaDownloadUrl":     {
+      "Type": "String",
+      "Default": "http://download.oracle.com/otn-pub/java/jdk/8u192-b12/750e1c8617c5452694857ad95c3ee230/server-jre-8u192-linux-x64.tar.gz",
+      "MinLength": 1,
+      "Description": "The Java download URL"
     },
-    "JavaSha256": {
-      "Type": "String"
+    "JavaSha256":     {
+      "Type": "String",
+      "Default": "3d811a5ec65dc6fc261f488757bae86ecfe285a79992363b016f60cdb4dbe7e6",
+      "MinLength": 1,
+      "Description": "The Java download SHA-256 hash"
     },
-    "LogGroupName": {
-      "Type": "String"
+    "LogGroupName":     {
+      "Type": "String",
+      "Default": "",
+      "Description": "A custom log group name"
     }
   },
   "Conditions": {
