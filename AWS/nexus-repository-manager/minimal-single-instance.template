@@ -44,13 +44,13 @@
       "ca-central-1": {"centos7": "ami-daeb57be"}
     },
     "Defaults":     {
-      "ChefRecipeVersion": {"Value": "release-0.5.20180828-231916.863899c"},
+      "ChefRecipeVersion": {"Value": "release-0.5.20181102-121641.63871ce"},
       "VpcNetBlock": {"Value": "10.0.0.0/16"},
       "SubnetAz": {"Value": "10.0.1.0/24"},
       "InstanceType": {"Value": "t2.large"},
       "DeleteBlockDeviceOnTermination": {"Value": "true"},
-      "NexusRepositoryManagerVersion": {"Value": "3.13.0-01"},
-      "NexusRepositoryManagerSha256": {"Value": "5d1890f45e95e2ca74e62247be6b439482d2fe4562a7ec8ae905c4bdba6954ce"},
+      "NexusRepositoryManagerVersion": {"Value": "3.14.0-04"},
+      "NexusRepositoryManagerSha256": {"Value": "ae8cc7891942d71cf12c11e1a98d70c1310e788ab44aa95c5d1e7671cc0187e2"},
       "JavaDownloadUrl": {"Value": "http://download.oracle.com/otn-pub/java/jdk/8u192-b12/750e1c8617c5452694857ad95c3ee230/server-jre-8u192-linux-x64.tar.gz"},
       "JavaSha256": {"Value": "3d811a5ec65dc6fc261f488757bae86ecfe285a79992363b016f60cdb4dbe7e6"},
       "LogGroupName": {"Value": ""}
