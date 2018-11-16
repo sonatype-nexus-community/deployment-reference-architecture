@@ -572,9 +572,32 @@
         ]
       }
     },
+    "InternalURL": {
+      "Description": "URL for Nexus IQ Server",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "http://",
+            {
+              "Fn::GetAtt": [
+                "NexusInstance",
+                "PrivateDnsName"
+              ]
+            },
+            ":8070"
+          ]
+        ]
+      }
+    },
     "LogGroup": {
       "Value": {
         "Ref": "LogGroup"
+      }
+    },
+    "Instance": {
+      "Value": {
+        "Ref": "NexusInstance"
       }
     }
   }
