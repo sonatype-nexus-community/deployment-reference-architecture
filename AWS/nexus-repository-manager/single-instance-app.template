@@ -566,7 +566,7 @@
   },
   "Outputs": {
     "WebsiteURL": {
-      "Description": "URL for Nexus Repository Server",
+      "Description": "URL for Nexus Repository Manager",
       "Value": {
         "Fn::Join": [
           "",
@@ -583,9 +583,32 @@
         ]
       }
     },
+    "InternalURL": {
+      "Description": "URL for Nexus Repository Manager",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "http://",
+            {
+              "Fn::GetAtt": [
+                "NexusInstance",
+                "PrivateDnsName"
+              ]
+            },
+            ":8081"
+          ]
+        ]
+      }
+    },
     "LogGroup": {
       "Value": {
         "Ref": "LogGroup"
+      }
+    },
+    "Instance": {
+      "Value": {
+        "Ref": "NexusInstance"
       }
     }
   }
