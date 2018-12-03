@@ -593,7 +593,7 @@
             {
               "Fn::GetAtt": [
                 "NexusInstance",
-                "PrivateDnsName"
+                "PrivateIp"
               ]
             },
             ":8081"
