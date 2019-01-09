@@ -35,13 +35,16 @@
   }},
   "Mappings":   {
     "AmiRegionMap":     {
-      "us-east-1": {"centos7": "ami-ae7bfdb8"},
-      "us-east-2": {"centos7": "ami-9cbf9bf9"},
-      "us-west-2": {"centos7": "ami-0c2aba6c"},
-      "eu-west-1": {"centos7": "ami-0d063c6b"},
-      "eu-central-1": {"centos7": "ami-7cbc6e13"},
-      "ap-southeast-2": {"centos7": "ami-24959b47"},
-      "ca-central-1": {"centos7": "ami-daeb57be"}
+      "us-east-1": {"centos7": "ami-4bf3d731"},
+      "us-east-2": {"centos7": "ami-e1496384"},
+      "us-west-1": {"centos7": "ami-65e0e305"},
+      "us-west-2": {"centos7": "ami-a042f4d8"},
+      "eu-west-1": {"centos7": "ami-6e28b517"},
+      "eu-west-2": {"centos7": "ami-ee6a718a"},
+      "eu-central-1": {"centos7": "ami-337be65c"},
+      "ap-southeast-1": {"centos7": "ami-d2fa88ae"},
+      "ap-southeast-2": {"centos7": "ami-b6bb47d4"},
+      "ca-central-1": {"centos7": "ami-dcad28b8"}
     },
     "Defaults":     {
       "ChefRecipeVersion": {"Value": "release-0.5.20181102-121641.63871ce"},
