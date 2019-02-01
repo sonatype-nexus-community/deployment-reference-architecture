@@ -129,34 +129,34 @@
   "Mappings": {
     "AmiRegionMap": {
       "us-east-1": {
-        "centos7": "ami-4bf3d731"
+        "centos7": "ami-02eac2c0129f6376b"
       },
       "us-east-2": {
-        "centos7": "ami-e1496384"
+        "centos7": "ami-0f2b4fc905b0bd1f1"
       },
       "us-west-1": {
-        "centos7": "ami-65e0e305"
+        "centos7": "ami-074e2d6769f445be5"
       },
       "us-west-2": {
-        "centos7": "ami-a042f4d8"
+        "centos7": "ami-01ed306a12b7d1c96"
       },
       "eu-west-1": {
-        "centos7": "ami-6e28b517"
+        "centos7": "ami-0ff760d16d9497662"
       },
       "eu-west-2": {
-        "centos7": "ami-ee6a718a"
+        "centos7": "ami-0eab3a90fc693af19"
       },
       "eu-central-1": {
-        "centos7": "ami-337be65c"
+        "centos7": "ami-04cf43aca3e6f3de3"
       },
       "ap-southeast-1": {
-        "centos7": "ami-d2fa88ae"
+        "centos7": "ami-0b4dd9d65556cac22"
       },
       "ap-southeast-2": {
-        "centos7": "ami-b6bb47d4"
+        "centos7": "ami-08bd00d7713a39e7d"
       },
       "ca-central-1": {
-        "centos7": "ami-dcad28b8"
+        "centos7": "ami-033e6106180a626d0"
       }
     }
   },
