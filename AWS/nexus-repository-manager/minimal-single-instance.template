@@ -47,13 +47,13 @@
       "ca-central-1": {"centos7": "ami-033e6106180a626d0"}
     },
     "Defaults":     {
-      "ChefRecipeVersion": {"Value": "release-0.5.20181102-121641.63871ce"},
+      "ChefRecipeVersion": {"Value": "release-0.5.20190212-155606.d1afdfe"},
       "VpcNetBlock": {"Value": "10.0.0.0/16"},
       "SubnetAz": {"Value": "10.0.1.0/24"},
       "InstanceType": {"Value": "t2.large"},
       "DeleteBlockDeviceOnTermination": {"Value": "true"},
-      "NexusRepositoryManagerVersion": {"Value": "3.14.0-04"},
-      "NexusRepositoryManagerSha256": {"Value": "ae8cc7891942d71cf12c11e1a98d70c1310e788ab44aa95c5d1e7671cc0187e2"},
+      "NexusRepositoryManagerVersion": {"Value": "3.15.2-01"},
+      "NexusRepositoryManagerSha256": {"Value": "acde357f5bbc6100eb0d5a4c60a1673d5f1f785e71a36cfa308b8dfa45cf25d0"},
       "JavaDownloadUrl": {"Value": "https://download.oracle.com/otn-pub/java/jdk/8u202-b08/1961070e4c9b4e26a04e7f5a083f551e/server-jre-8u202-linux-x64.tar.gz"},
       "JavaSha256": {"Value": "61292e9d9ef84d9702f0e30f57b208e8fbd9a272d87cd530aece4f5213c98e4e"},
       "LogGroupName": {"Value": ""}
