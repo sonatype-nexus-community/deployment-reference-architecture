@@ -10,7 +10,7 @@
     },
     "ChefRecipeVersion":     {
       "Type": "String",
-      "Default": "release-0.4.20180928-160558.8ffdd14",
+      "Default": "release-0.4.20190212-155907.2469b98",
       "Description": "Version of chef cookbook to install"
     },
     "DeleteBlockDeviceOnTermination":     {

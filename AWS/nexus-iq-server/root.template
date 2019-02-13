@@ -4,7 +4,7 @@
   "Parameters":   {
     "ChefRecipeVersion":     {
       "Type": "String",
-      "Default": "release-0.4.20190111-161626.49cce23",
+      "Default": "release-0.4.20190212-155907.2469b98",
       "Description": "Version of chef cookbook to install"
     },
     "DeleteBlockDeviceOnTermination":     {
