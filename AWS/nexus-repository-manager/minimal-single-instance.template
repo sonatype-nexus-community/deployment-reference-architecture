@@ -47,7 +47,7 @@
       "ca-central-1": {"centos7": "ami-033e6106180a626d0"}
     },
     "Defaults":     {
-      "ChefRecipeVersion": {"Value": "release-0.5.20190212-155606.d1afdfe"},
+      "ChefRecipeVersion": {"Value": "release-0.4.20190312-111301.45b7eef"},
       "VpcNetBlock": {"Value": "10.0.0.0/16"},
       "SubnetAz": {"Value": "10.0.1.0/24"},
       "InstanceType": {"Value": "t2.large"},
