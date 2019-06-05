@@ -467,7 +467,7 @@
                   "Fn::Join": [
                     "",
                     [
-                      "chef-solo -c /var/chef/chef-repo/.chef/solo.rb -j /var/chef/chef-repo/.chef/solo.json --recipe-url ",
+                      "chef-solo --chef-license accept-no-persist -c /var/chef/chef-repo/.chef/solo.rb -j /var/chef/chef-repo/.chef/solo.json --recipe-url ",
                       "https://github.com/sonatype/chef-nexus-repository-manager/releases/download/",
                       {
                         "Ref": "ChefRecipeVersion"
