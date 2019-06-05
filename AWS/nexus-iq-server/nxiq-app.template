@@ -396,7 +396,7 @@
                 "group": "root"
               },
               "/var/chef/chef-repo/.chef/solo.rb": {
-                "content": "cookbook_path [ '/var/chef/chef-repo/cookbooks' ]\nfile_cache_path '/tmp'\n",
+                "content": "file_cache_path '/tmp'\n",
                 "mode": "000400",
                 "owner": "root",
                 "group": "root"
@@ -485,7 +485,7 @@
                   "Fn::Join": [
                     "",
                     [
-                      "chef-solo -c /var/chef/chef-repo/.chef/solo.rb -j /var/chef/chef-repo/.chef/solo.json --recipe-url ",
+                      "chef-solo --chef-license accept-no-persist -c /var/chef/chef-repo/.chef/solo.rb -j /var/chef/chef-repo/.chef/solo.json --recipe-url ",
                       "https://github.com/sonatype/chef-nexus-iq-server/releases/download/",
                       {
                         "Ref": "ChefRecipeVersion"
