@@ -477,7 +477,7 @@
             },
             "commands": {
               "01_install_chef": {
-                "command": "bash /tmp/install.sh",
+                "command": "bash /tmp/install.sh -v 14.12.9",
                 "cwd": "/var/chef"
               },
               "02_chef_solo": {
@@ -485,7 +485,7 @@
                   "Fn::Join": [
                     "",
                     [
-                      "chef-solo --chef-license accept-no-persist -c /var/chef/chef-repo/.chef/solo.rb -j /var/chef/chef-repo/.chef/solo.json --recipe-url ",
+                      "chef-solo -c /var/chef/chef-repo/.chef/solo.rb -j /var/chef/chef-repo/.chef/solo.json --recipe-url ",
                       "https://github.com/sonatype/chef-nexus-iq-server/releases/download/",
                       {
                         "Ref": "ChefRecipeVersion"
