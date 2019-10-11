@@ -4,7 +4,7 @@
   "Parameters":   {
     "ChefRecipeVersion":     {
       "Type": "String",
-      "Default": "release-0.4.20190927-191752.6614c7c",
+      "Default": "release-0.4.20191011-145224.06f1fa6",
       "Description": "Version of chef cookbook to install"
     },
     "DeleteBlockDeviceOnTermination":     {
@@ -61,13 +61,13 @@
     },
     "NexusIQVersion":     {
       "Type": "String",
-      "Default": "1.74.0-01",
+      "Default": "1.75.0-01",
       "MinLength": 1,
       "Description": "The Nexus IQ Server version"
     },
     "NexusIQSha256":     {
       "Type": "String",
-      "Default": "36ac5a026482082cdbe6df86e2b18c5d529ca04f7915c74e0a14311f668e024a",
+      "Default": "e6ab568c3a52928530f3606793e44c827e492b620304b0aba849b9b437c26121",
       "MinLength": 1,
       "Description": "The Nexus IQ Server SHA-256 hash"
     },
