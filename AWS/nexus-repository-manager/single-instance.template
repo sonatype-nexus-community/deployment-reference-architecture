@@ -22,7 +22,7 @@
     },
     "ChefRecipeVersion":     {
       "Type": "String",
-      "Default": "release-0.4.20190312-111301.45b7eef",
+      "Default": "release-0.5.20190610-112912.debd18c",
       "Description": "URL of chef cookbook to install"
     },
     "LicenseS3Bucket":     {
@@ -72,13 +72,13 @@
     },
     "NexusRepositoryManagerVersion":     {
       "Type": "String",
-      "Default": "3.15.2-01",
+      "Default": "3.19.1-01",
       "MinLength": 1,
       "Description": "The Nexus Repository Manager version"
     },
     "NexusRepositoryManagerSha256":     {
       "Type": "String",
-      "Default": "acde357f5bbc6100eb0d5a4c60a1673d5f1f785e71a36cfa308b8dfa45cf25d0",
+      "Default": "7a2e62848abeb047c99e114b3613d29b4afbd635b03a19842efdcd6b6cb95f4e",
       "MinLength": 1,
       "Description": "The Nexus Repository Manager SHA-256 hash"
     },
