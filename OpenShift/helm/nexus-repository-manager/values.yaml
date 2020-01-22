@@ -9,10 +9,9 @@ deploymentStrategy: {}
   # type: RollingUpdate
 
 nexus:
-  imageName: registry.connect.redhat.com/sonatype/nexus-repository-manager
-  imageTag: 3.20.1-01-ubi-3
+  imageName: sonatype/nexus3
+  imageTag: 3.20.1
   imagePullPolicy: IfNotPresent
-  imagePullSecret: ""
   env:
     - name: install4jAddVmParams
       value: "-Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
@@ -78,6 +77,37 @@ route:
   labels:
   annotations:
   # path: /docker
+
+nexusProxy:
+  enabled: true
+  # svcName: proxy-svc
+  imageName: quay.io/travelaudience/docker-nexus-proxy
+  imageTag: 2.5.0
+  imagePullPolicy: IfNotPresent
+  port: 8080
+  targetPort: 8080
+  # labels: {}
+  env:
+    nexusDockerHost:
+    nexusHttpHost:
+    enforceHttps: false
+    cloudIamAuthEnabled: false
+## If cloudIamAuthEnabled is set to true uncomment the variables below and remove this line
+  #   clientId: ""
+  #   clientSecret: ""
+  #   organizationId: ""
+  #   redirectUrl: ""
+  #   requiredMembershipVerification: "true"
+  # secrets:
+  #   keystore: ""
+  #   password: ""
+  resources: {}
+    # requests:
+      # cpu: 100m
+      # memory: 256Mi
+    # limits:
+      # cpu: 200m
+      # memory: 512Mi
 
 nexusProxyRoute:
   enabled: false

@@ -11,13 +11,21 @@ metadata:
 spec:
   host: {{ .Values.nexusProxyRoute.path }}
   port:
+    {{- if .Values.nexusProxy.svcName }}
+      targetPort: {{ .Values.nexusProxy.svcName }}
+    {{- else }}
       targetPort: {{ template "nexus.fullname" . }}
+    {{- end }}
   tls:
     insecureEdgeTerminationPolicy: Redirect
     termination: edge
   to:
     kind: Service
+{{- if .Values.nexusProxy.svcName }}
+    name: {{ .Values.nexusProxy.svcName }}
+{{- else }}
     name: {{ template "nexus.fullname" . }}
+{{- end }}
     weight: 100
   wildcardPolicy: None
 {{- end }}
