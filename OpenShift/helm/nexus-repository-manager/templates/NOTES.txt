@@ -1,0 +1,12 @@
+1. To access Nexus:
+
+   NOTE: It may take a few minutes for the ingress load balancer to become available or the backends to become HEALTHY.
+         You can watch the status of the backends by running:
+         `kubectl get ingress -o jsonpath='{.items[*].metadata.annotations.ingress\.kubernetes\.io/backends}'`
+
+
+
+4. Next steps in configuration
+
+   Please follow the link below to the README for nexus configuration, usage, backups and DR info:
+   https://github.com/helm/charts/tree/master/stable/sonatype-nexus#after-installing-the-chart
