@@ -78,37 +78,6 @@ route:
   annotations:
   # path: /docker
 
-nexusProxy:
-  enabled: true
-  # svcName: proxy-svc
-  imageName: quay.io/travelaudience/docker-nexus-proxy
-  imageTag: 2.5.0
-  imagePullPolicy: IfNotPresent
-  port: 8080
-  targetPort: 8080
-  # labels: {}
-  env:
-    nexusDockerHost:
-    nexusHttpHost:
-    enforceHttps: false
-    cloudIamAuthEnabled: false
-## If cloudIamAuthEnabled is set to true uncomment the variables below and remove this line
-  #   clientId: ""
-  #   clientSecret: ""
-  #   organizationId: ""
-  #   redirectUrl: ""
-  #   requiredMembershipVerification: "true"
-  # secrets:
-  #   keystore: ""
-  #   password: ""
-  resources: {}
-    # requests:
-      # cpu: 100m
-      # memory: 256Mi
-    # limits:
-      # cpu: 200m
-      # memory: 512Mi
-
 nexusProxyRoute:
   enabled: false
   labels:
