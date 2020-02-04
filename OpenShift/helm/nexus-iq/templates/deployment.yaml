@@ -1,57 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "nexus-iq.fullname" . }}
+  name: nxiq-deployment
   labels:
-{{ include "nexus-iq.labels" . | indent 4 }}
+    app: nxiq
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "nexus-iq.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app: nxiq
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "nexus-iq.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        app: nxiq
     spec:
-    {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-      serviceAccountName: {{ template "nexus-iq.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+      - name: nxiq
+        image: sonatype/nexus-iq-server
+        ports:
+        - containerPort: 8070
+        resources:
+          limits:
+            memory: 1Gi
+        volumeMounts:
+          - mountPath: /sonatype-work
+            name: nxiq-pv-storage
+          - mountPath: /etc/nexus-iq-server
+            name: config-volume
+      volumes:
+        - name: nxiq-pv-storage
+          persistentVolumeClaim:
+            claimName: nxiq-pv-claim
+        - name: config-volume
+          configMap:
+            name: nxiq-config
+            items:
+              - key: config.yml
+                path: config.yml
