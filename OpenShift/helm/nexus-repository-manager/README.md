@@ -17,9 +17,49 @@ There is also the option of using a [proxy for Nexus](https://github.com/travela
 - PV provisioner support in the underlying infrastructure
 - [Fulfill Nexus kubernetes requirements](https://github.com/travelaudience/kubernetes-nexus#pre-requisites)
 
-### With GCP IAM enabled
-All the [Prerequisites](#Prerequisites) should be in place, plus:
-- [Fulfill GCP IAM requirements](https://github.com/travelaudience/kubernetes-nexus/blob/master/docs/admin/configuring-nexus-proxy.md#pre-requisites)
+### With Open Docker Image
+
+By default, the Chart uses Red Hat's Certified Container. If you want to use the standard docker image, run with `--set nexus.imageName=sonatype/nexus3`.
+
+### With Red Hat Certified container
+
+Red Hat Certified Container (RHCC) requires authentication in order to pull the image. To do this:
+
+  1. [Create a Service Account](https://access.redhat.com/terms-based-registry/)
+  2. Copy the docker configuration JSON sample and replace the host from `registry.redhat.io` to `registry.connect.redhat.com` and save it as a file, eg:
+
+```JSON
+{
+  "auths": {
+    "registry.connect.redhat.com": {
+      "auth": "TOKEN"
+    }
+  }
+}
+```
+  3. Encode the file in Base 64 format:
+
+```bash
+cat service-auth.json | base64 > service.base64
+```
+  4. Create a Secret file, eg `rhcc-pull-secret.yaml` using this base 64 string as:
+
+```YAML
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rhcc-pull-secret
+data:
+  .dockerconfigjson: {BASE64-TOKEN}
+
+type: kubernetes.io/dockerconfigjson
+```
+
+Then this can be submitted to the cluster as:
+
+```bash
+kubectl create -f rhcc-pull-secret.yaml --namespace=NAMESPACEHERE
+```
 
 ## Testing the Chart
 To test the chart:

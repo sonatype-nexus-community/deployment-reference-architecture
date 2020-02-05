@@ -9,9 +9,10 @@ deploymentStrategy: {}
   # type: RollingUpdate
 
 nexus:
-  imageName: sonatype/nexus3
-  imageTag: 3.20.1
+  imageName: registry.connect.redhat.com/sonatype/nexus-repository-manager
+  imageTag: 3.20.1-01-ubi-3
   imagePullPolicy: IfNotPresent
+  imagePullSecret: ""
   env:
     - name: install4jAddVmParams
       value: "-Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
