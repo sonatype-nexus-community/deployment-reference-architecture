@@ -10,19 +10,3 @@ spec:
     protocol: TCP
     port: 8070
   type: NodePort
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nxiq-config
-data:
-  config.yml: |
-    server:
-      applicationConnectors:
-        - type: http
-          port: 8070
-      adminConnectors:
-        - type: http
-          port: 8071
-    createSampleData: true
-    sonatypeWork: /sonatype-work

@@ -27,6 +27,8 @@ spec:
             name: nxiq-pv-storage
           - mountPath: /etc/nexus-iq-server
             name: config-volume
+          - mountPath: /etc/nexus-iq-license
+            name: license-volume
       volumes:
         - name: nxiq-pv-storage
           persistentVolumeClaim:
@@ -37,3 +39,6 @@ spec:
             items:
               - key: config.yml
                 path: config.yml
+        - name: license-volume
+          secret:
+            secretName: license-secret

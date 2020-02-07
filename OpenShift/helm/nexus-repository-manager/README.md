@@ -23,6 +23,9 @@ By default, the Chart uses Red Hat's Certified Container. If you want to use the
 
 ### With Red Hat Certified container
 
+TODO: update doc to use the existing `secret.yaml` file & a custom values file.
+
+
 Red Hat Certified Container (RHCC) requires authentication in order to pull the image. To do this:
 
   1. [Create a Service Account](https://access.redhat.com/terms-based-registry/)
