@@ -50,7 +50,7 @@ kind: Secret
 metadata:
   name: rhcc-pull-secret
 data:
-  .dockerconfigjson: {BASE64-TOKEN}
+  .dockerconfigjson: {BASE64-DOCKER-CONFIG}
 
 type: kubernetes.io/dockerconfigjson
 ```
@@ -60,6 +60,22 @@ Then this can be submitted to the cluster as:
 ```bash
 kubectl create -f rhcc-pull-secret.yaml --namespace=NAMESPACEHERE
 ```
+
+## Initialize Helm/Tiller on the Kubernetes cluster if needed
+
+Install helm/tiller:
+```bash
+$ helm init
+```
+
+Grant cluster-admin to kube-system:default service account:
+```bash
+$ kubectl create clusterrolebinding add-on-cluster-admin \
+    --clusterrole=cluster-admin \
+    --serviceaccount=kube-system:default
+```
+This helps avoid a later error during `helm install`: 
+```Error: no available release name found```
 
 ## Testing the Chart
 To test the chart:
