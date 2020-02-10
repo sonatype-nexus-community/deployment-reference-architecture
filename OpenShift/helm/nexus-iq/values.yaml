@@ -36,25 +36,10 @@ serviceAccount:
   name:
 
 ingress:
-  enabled: false
-  path: /
-  annotations: {}
-  # # NOTE: Can't use 'false' due to https://github.com/jetstack/kube-lego/issues/173.
-  # kubernetes.io/ingress.allow-http: true
-  # kubernetes.io/ingress.class: gce
-  # kubernetes.io/ingress.global-static-ip-name: ""
-  # kubernetes.io/tls-acme: true
-  tls:
-    enabled: true
-    secretName: nexus-tls
-  # Specify custom rules in addition to or instead of the nexus-proxy rules
-  rules:
-  # - host: http://nexus.127.0.0.1.nip.io
-  #   http:
-  #     paths:
-  #     - backend:
-  #         serviceName: additional-svc
-  #         servicePort: 80
+  enabled: true
+  adminPort: 8071
+  applicationPort: 8070
+
 
 # # To use an additional service, set enable to true
 service:
