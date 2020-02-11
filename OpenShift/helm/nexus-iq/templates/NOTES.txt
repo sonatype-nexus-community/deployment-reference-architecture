@@ -1,8 +1,27 @@
-1. Get the application URL by running these commands:
-{{- if .Values.ingress.enabled }}
-{{- range $host := .Values.ingress.hosts }}
-  {{- range .paths }}
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ . }}
-  {{- end }}
-{{- end }}
-{{- end }}
+The service can be exposed using a custom ingress node or by exposing a
+NodePort:
+
+  kubectl expose deployment --type=NodePort nxiq-deployment
+
+
+If you are using minikube, you can find the url as:
+
+  minikube service --url=true nxiq-deployment
+
+Otherwise you can find the exposed port under `NodePort` in:
+
+# kubectl describe services nxiq-deployment
+Name:                     nxiq-deployment
+Namespace:                default
+Labels:                   app=nxiq
+Annotations:              <none>
+Selector:                 app=nxiq
+Type:                     NodePort
+IP:                       1.2.3.4
+Port:                     <unset>  8070/TCP
+TargetPort:               8070/TCP
+NodePort:                 <unset>  31785/TCP
+Endpoints:                172.17.0.5:8070
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
