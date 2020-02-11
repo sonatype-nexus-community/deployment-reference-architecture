@@ -5,26 +5,17 @@
 ## Introduction
 
 This chart bootstraps a Nexus OSS deployment on a cluster using Helm.
-This setup is best configured in [GCP](https://cloud.google.com/) since:
-- [google cloud storage](https://cloud.google.com/storage/) is used for backups
-- [GCE Ingress controller](https://github.com/kubernetes/ingress/blob/master/docs/faq/gce.md) is used for using a pre-allocated static IP in GCE.
-
-There is also the option of using a [proxy for Nexus](https://github.com/travelaudience/nexus-proxy) that authenticates Nexus against an external identity provider (only GCP IAM at the moment) which is **disabled** by default.
-
+\
 ## Prerequisites
 
 - Kubernetes 1.8+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
-- [Fulfill Nexus kubernetes requirements](https://github.com/travelaudience/kubernetes-nexus#pre-requisites)
 
 ### With Open Docker Image
 
 By default, the Chart uses Red Hat's Certified Container. If you want to use the standard docker image, run with `--set nexus.imageName=sonatype/nexus3`.
 
 ### With Red Hat Certified container
-
-TODO: update doc to use the existing `secret.yaml` file & a custom values file.
-
 
 Red Hat Certified Container (RHCC) requires authentication in order to pull the image. To do this:
 
@@ -71,14 +62,6 @@ Install helm/tiller:
 $ helm init
 ```
 
-Grant cluster-admin to kube-system:default service account:
-```bash
-$ kubectl create clusterrolebinding add-on-cluster-admin \
-    --clusterrole=cluster-admin \
-    --serviceaccount=kube-system:default
-```
-This helps avoid a later error during `helm install`: 
-```Error: no available release name found```
 
 ## Testing the Chart
 To test the chart:
@@ -95,10 +78,24 @@ $ helm install --dry-run --debug -f my_values.yaml ./
 To install the chart:
 
 ```bash
-$ helm install stable/sonatype-nexus
+$ helm install ./
 ```
 
-The above command deploys Nexus on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+If you are getting the error `Error: no available release name found` during
+`helm install`, grant cluster-admin to kube-system:default service account:
+```bash
+$ kubectl create clusterrolebinding add-on-cluster-admin \
+    --clusterrole=cluster-admin \
+    --serviceaccount=kube-system:default
+```
+
+The above command deploys Nexus on the Kubernetes cluster in the default configuration.
+
+You can pass custom configuration values as:
+
+```
+helm install -f myvalues.yaml ./ --name sonatype-nexus
+```
 
 The default login is admin/admin123
 
@@ -124,8 +121,6 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `statefulset.enabled`                       | Use statefulset instead of deployment | `false` |
 | `replicaCount`                              | Number of Nexus service replicas    | `1`                                     |
 | `deploymentStrategy`                        | Deployment Strategy     |  `rollingUpdate` |
-| `nexus.imageName`                           | Nexus image                         | `quay.io/travelaudience/docker-nexus`   |
-| `nexus.imageTag`                            | Version of Nexus                    | `3.19.1`                                 |
 | `nexus.imagePullPolicy`                     | Nexus image pull policy             | `IfNotPresent`                          |
 | `nexus.imagePullSecret`                     | Secret to download Nexus image from private registry      | `nil`             |
 | `nexus.env`                                 | Nexus environment variables         | `[{install4jAddVmParams: -Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap}]` |
@@ -148,12 +143,6 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.readinessProbe.timeoutSeconds`       | Time in seconds after readiness probe times out    | `nil`                    |
 | `nexus.readinessProbe.path`                 | Path for ReadinessProbe             | /                                       |
 | `nexus.hostAliases`                         | Aliases for IPs in /etc/hosts       | []                                      |
-| `persistence.enabled`                       | Create a volume for storage         | `true`                                  |
-| `persistence.accessMode`                    | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                         |
-| `persistence.storageClass`                  | Storage class of Nexus PVC          | `nil`                                   |
-| `persistence.storageSize`                   | Size of Nexus data volume           | `8Gi`                                   |
-| `persistence.annotations`                   | Persistent Volume annotations       | `{}`                                    |
-| `persistence.existingClaim`                 | Existing persistent volume name     | `nil`                                   |
 | `ingress.enabled`                           | Create an ingress for Nexus         | `true`                                  |
 | `ingress.annotations`                       | Annotations to enhance ingress configuration  | `{}`                          |
 | `ingress.tls.enabled`                       | Enable TLS                          | `true`                                 |
@@ -189,17 +178,6 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `route.path`            | Host name of Route e.g jenkins.example.com         | nil |
 
 
-```bash
-$ helm install --name my-release --set persistence.enabled=false stable/sonatype-nexus
-```
-The above example turns off the persistence. Data will not be kept between restarts or deployments
-
-Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
-
-```bash
-$ helm install --name my-release -f my-values.yaml stable/sonatype-nexus
-```
-
 ### Persistence
 
 By default a PersistentVolumeClaim is created and mounted into the `/nexus-data` directory. In order to disable this functionality
@@ -209,54 +187,3 @@ you can change the `values.yaml` to disable persistence which will use an `empty
 
 
 You must enable StatefulSet (`statefulset.enabled=true`) for true data persistence. If using Deployment approach, you can not recover data after restart or delete of helm chart. Statefulset will make sure that it picks up the same old volume which was used by the previous life of the nexus pod, helping you recover your data. When enabling statefulset, its required to enable the persistence.
-
-
-### Recommended settings
-
-As a minimum for running in production, the following settings are advised:
-
-```yaml
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: gce
-    kubernetes.io/tls-acme: true
-
-persistence:
-  storageClass: standard
-  storageSize: 1024Gi
-
-resources:
-  requests:
-    cpu: 250m
-    # Based on https://support.sonatype.com/hc/en-us/articles/115006448847#mem
-    # and https://twitter.com/analytically/status/894592422382063616:
-    #   Xms == Xmx
-    #   Xmx <= 4G
-    #   MaxDirectMemory >= 2G
-    #   Xmx + MaxDirectMemory <= RAM * 2/3 (hence the request for 4800Mi)
-    #   MaxRAMFraction=1 is not being set as it would allow the heap
-    #     to use all the available memory.
-    memory: 4800Mi
-```
-
-## After Installing the Chart
-After installing the chart a couple of actions need still to be done in order to use nexus. Please follow the instructions below.
-
-### Nexus Configuration
-The following steps need to be executed in order to use Nexus:
-
-- [Configure Nexus](https://github.com/travelaudience/kubernetes-nexus/blob/master/docs/admin/configuring-nexus.md)
-- [Configure Backups](https://github.com/travelaudience/kubernetes-nexus/blob/master/docs/admin/configuring-nexus.md#configure-backup)
-
-and if GCP IAM authentication is enabled, please also check:
-- [Enable GCP IAM authentication in Nexus ](https://github.com/travelaudience/kubernetes-nexus/blob/master/docs/admin/configuring-nexus-proxy.md#enable-gcp-iam-auth)
-
-### Nexus Usage
-To see how to use Nexus with different tools like Docker, Maven, Python, and so on please check:
-
-- [Nexus Usage](https://github.com/travelaudience/kubernetes-nexus#usage)
-
-### Disaster Recovery
-In a disaster recovery scenario, the latest backup made by the nexus-backup container should be restored. In order to achieve this please follow the procedure described below:
-- [Restore Backups](https://github.com/travelaudience/kubernetes-nexus#restore)
