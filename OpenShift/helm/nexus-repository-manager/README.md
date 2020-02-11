@@ -79,8 +79,23 @@ To install the chart:
 
 ```bash
 $ helm install ./
+```
+
+If you are getting the error `Error: no available release name found` during
+`helm install`, grant cluster-admin to kube-system:default service account:
+```bash
+$ kubectl create clusterrolebinding add-on-cluster-admin \
+    --clusterrole=cluster-admin \
+    --serviceaccount=kube-system:default
+```
 
 The above command deploys Nexus on the Kubernetes cluster in the default configuration.
+
+You can pass custom configuration values as:
+
+```
+helm install -f myvalues.yaml ./ --name sonatype-nexus
+```
 
 The default login is admin/admin123
 
