@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "nexus-iq.name" -}}
+{{- define "iqserver.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "nexus-iq.fullname" -}}
+{{- define "iqserver.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,16 +27,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "nexus-iq.chart" -}}
+{{- define "iqserver.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "nexus-iq.labels" -}}
-app.kubernetes.io/name: {{ include "nexus-iq.name" . }}
-helm.sh/chart: {{ include "nexus-iq.chart" . }}
+{{- define "iqserver.labels" -}}
+app.kubernetes.io/name: {{ include "iqserver.name" . }}
+helm.sh/chart: {{ include "iqserver.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -47,9 +47,9 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "nexus-iq.serviceAccountName" -}}
+{{- define "iqserver.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "nexus-iq.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "iqserver.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}

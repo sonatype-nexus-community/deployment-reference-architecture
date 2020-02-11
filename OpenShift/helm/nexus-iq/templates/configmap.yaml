@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nxiq-config
+  name: {{ template "iqserver.fullname" . }}
 data:
   config.yml: |
 {{ toYaml .Values.iq.configYaml | indent 4 }}

@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nxiq-deployment
+  name: {{ template "iqserver.fullname" . }}
   labels:
-    app: nxiq
+    app: {{ template "iqserver.fullname" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nxiq
+      app: {{ template "iqserver.fullname" . }}
   template:
     metadata:
       labels:
-        app: nxiq
+        app: {{ template "iqserver.fullname" . }}
     spec:
       containers:
-      - name: nxiq
+      - name: {{ template "iqserver.fullname" . }}
         image: sonatype/nexus-iq-server
         ports:
         - containerPort: 8070
@@ -35,7 +35,7 @@ spec:
             claimName: nxiq-pv-claim
         - name: config-volume
           configMap:
-            name: nxiq-config
+            name: {{ template "iqserver.fullname" . }}
             items:
               - key: config.yml
                 path: config.yml

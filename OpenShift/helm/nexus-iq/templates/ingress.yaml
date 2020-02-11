@@ -1,13 +1,13 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "nexus-iq.fullname" . -}}
+{{- $fullName := include "iqserver.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app.kubernetes.io/name: {{ include "nexus-iq.name" . }}
-    helm.sh/chart: {{ include "nexus-iq.chart" . }}
+    app.kubernetes.io/name: {{ include "iqserver.name" . }}
+    helm.sh/chart: {{ include "iqserver.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- with .Values.ingress.annotations }}

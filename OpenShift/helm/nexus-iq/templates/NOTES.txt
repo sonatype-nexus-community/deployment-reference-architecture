@@ -1,21 +1,21 @@
 The service can be exposed using a custom ingress node or by exposing a
 NodePort:
 
-  kubectl expose deployment --type=NodePort nxiq-deployment
+  kubectl expose deployment --type=NodePort {{ template "iqserver.fullname" . }}
 
 
 If you are using minikube, you can find the url as:
 
-  minikube service --url=true nxiq-deployment
+  minikube service --url=true {{ template "iqserver.fullname" . }}
 
 Otherwise you can find the exposed port under `NodePort` in:
 
-# kubectl describe services nxiq-deployment
-Name:                     nxiq-deployment
+# kubectl describe services {{ template "iqserver.fullname" . }}
+Name:                     {{ template "iqserver.fullname" . }}
 Namespace:                default
-Labels:                   app=nxiq
+Labels:                   app=iqserver
 Annotations:              <none>
-Selector:                 app=nxiq
+Selector:                 app=iqserver
 Type:                     NodePort
 IP:                       1.2.3.4
 Port:                     <unset>  8070/TCP
