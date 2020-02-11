@@ -1,12 +1,35 @@
-1. To access Nexus:
+The service can be exposed using a custom ingress node or by exposing a
+NodePort:
 
-   NOTE: It may take a few minutes for the ingress load balancer to become available or the backends to become HEALTHY.
-         You can watch the status of the backends by running:
-         `kubectl get ingress -o jsonpath='{.items[*].metadata.annotations.ingress\.kubernetes\.io/backends}'`
-
+  kubectl expose deployment --type=NodePort {{ template "nexus.fullname" . }}
 
 
-4. Next steps in configuration
+If you are using minikube, you can find the url as:
 
-   Please follow the link below to the README for nexus configuration, usage, backups and DR info:
-   https://github.com/helm/charts/tree/master/stable/sonatype-nexus#after-installing-the-chart
+  minikube service --url=true {{ template "nexus.fullname" . }}
+
+Otherwise you can find the exposed port under `NodePort` in:
+
+# kubectl describe services {{ template "nexus.fullname" . }}
+Name:                     {{ template "nexus.fullname" . }}
+Namespace:                default
+Labels:                   app=sonatype-nexus
+                          chart=sonatype-nexus-0.2.0
+                          fullname={{ template "nexus.fullname" . }}
+                          heritage=Tiller
+                          release=vocal-lion
+Annotations:              <none>
+Selector:                 app=sonatype-nexus,release={{ .Release.Name }}
+Type:                     NodePort
+IP:                       1.2.3.4
+Port:                     port-1  5003/TCP
+TargetPort:               5003/TCP
+NodePort:                 port-1  30396/TCP
+Endpoints:                172.17.0.6:5003
+Port:                     port-2  8081/TCP
+TargetPort:               8081/TCP
+NodePort:                 port-2  31341/TCP
+Endpoints:                172.17.0.6:8081
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
