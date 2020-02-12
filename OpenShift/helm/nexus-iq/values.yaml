@@ -6,7 +6,13 @@ replicaCount: 1
 
 iq:
   name: nxiq
+  applicationPort: 8070
+  adminPort: 8071
+  storageCapacity: 1Gi
+  memory: 1Gi
+  # base 64 encoded license file with no line breaks
   licenseSecret: ""
+  # configYaml is the full text of the config.yml file that will be passed to IQ Server
   configYaml:
     server:
       applicationConnectors:
@@ -17,6 +23,7 @@ iq:
           port: 8071
     createSampleData: true
     sonatypeWork: /sonatype-work
+    # add this line and the `licenseSecret` above to autoconfigure licensing
     licenseFile: /etc/nexus-iq-license/license_lic
 
 

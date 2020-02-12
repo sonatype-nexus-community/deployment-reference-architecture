@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nxiq-service
+  name: {{ template "iqserver.fullname" . }}
 spec:
   selector:
-    app: nxiq
+    app: {{ template "iqserver.fullname" . }}
   ports:
-  - name: ui
-    protocol: TCP
-    port: 8070
+  - name: application
+    port: {{ .Values.iq.applicationPort }}
+  - name: admin
+    port: {{ .Values.iq.adminPort }}
   type: NodePort

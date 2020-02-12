@@ -18,10 +18,10 @@ spec:
       - name: {{ template "iqserver.fullname" . }}
         image: sonatype/nexus-iq-server
         ports:
-        - containerPort: 8070
+        - containerPort: {{ .Values.iq.applicationPort }}
         resources:
           limits:
-            memory: 1Gi
+            memory: {{ .Values.iq.memory }}
         volumeMounts:
           - mountPath: /sonatype-work
             name: nxiq-pv-storage
@@ -41,4 +41,4 @@ spec:
                 path: config.yml
         - name: license-volume
           secret:
-            secretName: license-secret
+            secretName: {{ template "iqserver.fullname" . }}
