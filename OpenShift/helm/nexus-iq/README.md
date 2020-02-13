@@ -6,7 +6,6 @@
 
 | Parameter            | Description                                                  | Default           |
 | -------------------- | ------------------------------------------------------------ | ----------------- |
-| `replicaCount`       | Number of IQ Service replicas                                | `1`               |
 | `iq.applicationPort` | Port of the application connector. Must match the value in the `configYaml` property | `8070`            |
 | `iq.adminPort`       | Port of the application connector. Must match the value in the `configYaml` property | `8071`            |
 | `iq.storageCapacity` | The amount of drive space to allocate                        | `1Gi`             |
@@ -23,7 +22,7 @@
 
 ## Configuring IQ Server
 
-You can define the `config.yml` for IQ Server in the `values.yml` file on startup. It is the `iq.configYaml` property. For more details, see the [Configuring IQ Server](https://help.sonatype.com/iqserver/configuring) help page.
+You can define the `config.yml` for IQ Server in your `myvalues.yml` file on startup. It is the `iq.configYaml` property. For more details, see the [Configuring IQ Server](https://help.sonatype.com/iqserver/configuring) help page.
 
 
 ## Installing License
@@ -34,9 +33,9 @@ The license file can be installed via the UI when IQ server is running, or it ca
 base64 --wrap=0 mylicense.lic > lic.base64
 ```
 
-Then add this value to your `Values.yaml` file as `iq.licenseSecret`, eg:
+Then add this value to your `myvalues.yaml` file as `iq.licenseSecret`, eg:
 
-```YAML
+```yaml
 iq:
   licenseSecret: bXkgc2FtcGxlIGxpY2Vuc2U=
 ```
