@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "iqserver.fullname" . }}
+  labels:
+    app: {{ template "iqserver.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "iqserver.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "iqserver.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "iqserver.fullname" . }}
+        image: sonatype/nexus-iq-server
+        ports:
+        - containerPort: {{ .Values.iq.applicationPort }}
+        resources:
+          limits:
+            memory: {{ .Values.iq.memory }}
+        volumeMounts:
+          - mountPath: /sonatype-work
+            name: nxiq-pv-storage
+          - mountPath: /etc/nexus-iq-server
+            name: config-volume
+          - mountPath: /etc/nexus-iq-license
+            name: license-volume
+      volumes:
+        - name: nxiq-pv-storage
+          persistentVolumeClaim:
+            claimName: nxiq-pv-claim
+        - name: config-volume
+          configMap:
+            name: {{ template "iqserver.fullname" . }}
+            items:
+              - key: config.yml
+                path: config.yml
+        - name: license-volume
+          secret:
+            secretName: {{ template "iqserver.fullname" . }}
