@@ -111,36 +111,6 @@ spec:
             {{- if .Values.deployment.additionalVolumeMounts}}
 {{ toYaml .Values.deployment.additionalVolumeMounts | indent 12 }}
             {{- end }}
-        {{- if .Values.nexusBackup.enabled }}
-        - name: nexus-backup
-          image: {{ .Values.nexusBackup.imageName }}:{{ .Values.nexusBackup.imageTag }}
-          imagePullPolicy: {{ .Values.nexusBackup.imagePullPolicy }}
-          env:
-            - name: NEXUS_AUTHORIZATION
-              valueFrom:
-                secretKeyRef:
-                  key: nexus.nexusAdminPassword
-                  name: {{ template "nexus.fullname" . }}
-            - name: NEXUS_BACKUP_DIRECTORY
-              value: /nexus-data/backup
-            - name: NEXUS_DATA_DIRECTORY
-              value: /nexus-data
-            - name: NEXUS_LOCAL_HOST_PORT
-              value: "localhost:{{ .Values.nexus.nexusPort }}"
-            - name: OFFLINE_REPOS
-              value: "maven-central maven-public maven-releases maven-snapshots"
-            - name: TARGET_BUCKET
-              value: {{ .Values.nexusBackup.env.targetBucket | quote }}
-            - name: GRACE_PERIOD
-              value: "60"
-            - name: TRIGGER_FILE
-              value: .backup
-          volumeMounts:
-            - mountPath: /nexus-data
-              name: {{ template "nexus.fullname" . }}-data
-            - mountPath: /nexus-data/backup
-              name: {{ template "nexus.fullname" . }}-backup
-        {{- end }}
         {{- if .Values.deployment.additionalContainers }}
 {{ toYaml .Values.deployment.additionalContainers | indent 8 }}
         {{- end }}
@@ -154,10 +124,8 @@ spec:
         - name: {{ template "nexus.fullname" . }}-data
           emptyDir: {}
         {{- end }}
-        {{- if not (and .Values.nexusBackup.enabled .Values.nexusBackup.persistence.enabled) }}
         - name: {{ template "nexus.fullname" . }}-backup
           emptyDir: {}
-        {{- end }}
         {{- else }}
         - name: {{ template "nexus.fullname" . }}-data
           {{- if .Values.persistence.enabled }}
@@ -167,12 +135,7 @@ spec:
           emptyDir: {}
           {{- end }}
         - name: {{ template "nexus.fullname" . }}-backup
-          {{- if and .Values.nexusBackup.enabled (.Values.nexusBackup.persistence.enabled) }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.nexusBackup.persistence.existingClaim | default (printf "%s-%s" (include "nexus.fullname" .) "backup") }}
-          {{- else }}
           emptyDir: {}
-          {{- end }}
         {{- end }}
         {{- if .Values.config.enabled }}
         - name: {{ template "nexus.name" . }}-conf
@@ -216,30 +179,6 @@ spec:
         storageClassName: ""
         {{- else }}
         storageClassName: "{{ .Values.persistence.storageClass }}"
-        {{- end }}
-        {{- end }}
-    {{- end }}
-
-    {{- if and .Values.nexusBackup.enabled (.Values.nexusBackup.persistence.enabled) }}
-    - metadata:
-        name: {{ template "nexus.fullname" . }}-backup
-        labels:
-{{ include "nexus.labels" . | indent 10 }}
-        {{- if .Values.nexusBackup.persistence.annotations }}
-        annotations:
-{{ toYaml .Values.nexusBackup.persistence.annotations | indent 10 }}
-        {{- end }}
-      spec:
-        accessModes:
-          - {{ .Values.nexusBackup.persistence.accessMode }}
-        resources:
-          requests:
-            storage: {{ .Values.nexusBackup.persistence.storageSize | quote }}
-        {{- if .Values.nexusBackup.persistence.storageClass }}
-        {{- if (eq "-" .Values.nexusBackup.persistence.storageClass) }}
-        storageClassName: ""
-        {{- else }}
-        storageClassName: "{{ .Values.nexusBackup.persistence.storageClass }}"
         {{- end }}
         {{- end }}
     {{- end }}
