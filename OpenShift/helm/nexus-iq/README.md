@@ -2,10 +2,51 @@
 
 [Sonatype Nexus IQ Server](https://www.sonatype.com/nexus-iq-server)  is everything you need to know to trust your software supply chain. It powers Nexus Firewall, Nexus Lifecycle, and Nexus Auditor.
 
+
+### With Open Docker Image
+
+By default, the Chart uses Red Hat's Certified Container. If you want to use the standard docker image, run with `--set iq.imageName=sonatype/nexus-iq-server`.
+
+### With Red Hat Certified container
+
+Red Hat Certified Container (RHCC) requires authentication in order to pull the image. To do this:
+
+  1. [Create a Service Account](https://access.redhat.com/terms-based-registry/)
+  2. Copy the docker configuration JSON sample and replace the host from `registry.redhat.io` to `registry.connect.redhat.com` and save it as a file, eg:
+
+```json
+{
+  "auths": {
+    "registry.connect.redhat.com": {
+      "auth": "TOKEN"
+    }
+  }
+}
+```
+  3. Encode the file in Base 64 format:
+
+```bash
+cat service-auth.json | base64 > service.base64
+```
+  4. Add this to your `myvalues.yaml` as `iq.imagePullSecret`:
+
+```yaml
+iq:
+  name: nxiq
+  imageName: registry.connect.redhat.com/sonatype/nexus-iq-server
+  imageTag: 3.20.1-01-ubi-3
+  imagePullPolicy: IfNotPresent
+  imagePullSecret: "{BASE64-DOCKER-CONFIG}"
+```
+
+
 ## Chart Configuration Options
 
 | Parameter            | Description                                                  | Default           |
 | -------------------- | ------------------------------------------------------------ | ----------------- |
+| `iq.imageName`       | The image name to use for the IQ Container, eg `sonatype/nexus-iq-server`  | `"registry.connect.redhat.com/sonatype/nexus-iq-server"`              |
+| `iq.imageTag`        | The image tag to use                                         | the latest tag, eg `"3.20.1-01-ubi-3"`              |
+| `iq.imagePullSecret` | The base-64 encoded secret to pull a container from Red Hat  | `""`              |
 | `iq.applicationPort` | Port of the application connector. Must match the value in the `configYaml` property | `8070`            |
 | `iq.adminPort`       | Port of the application connector. Must match the value in the `configYaml` property | `8071`            |
 | `iq.storageCapacity` | The amount of drive space to allocate                        | `1Gi`             |
