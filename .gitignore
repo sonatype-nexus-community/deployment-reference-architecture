@@ -1,1 +1,3 @@
 ﻿OpenShift/helm/nexus-iq/myvalues.yaml
+.idea/*
+OpenShift/helm/nexus-repository-manager/myvalues.yaml

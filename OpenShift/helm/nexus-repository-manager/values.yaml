@@ -149,6 +149,9 @@ deployment:
   # # Uncomment and modify this to run a command after starting the nexus container.
   postStart:
     command:    # '["/bin/sh", "-c", "ls"]'
+  preStart:
+    command:    # '["/bin/rm", "-f", "/tmp/i4jdaemon__opt_nexus_nexus-3.20.0-04_bin_nexus"]'
+  terminationGracePeriodSeconds: 120
   additionalContainers:
   additionalVolumes:
   additionalVolumeMounts:
