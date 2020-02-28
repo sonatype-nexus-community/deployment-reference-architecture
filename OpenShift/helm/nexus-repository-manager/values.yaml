@@ -149,6 +149,9 @@ deployment:
   # # Uncomment and modify this to run a command after starting the nexus container.
   postStart:
     command:    # '["/bin/sh", "-c", "ls"]'
+  preStart:
+    command:    # '["/bin/rm", "-f", "/path/to/lockfile"]'
+  terminationGracePeriodSeconds: 120
   additionalContainers:
   additionalVolumes:
   additionalVolumeMounts:
