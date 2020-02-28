@@ -19,9 +19,5 @@ icon: https://www.sonatype.com/hubfs/2019%20Horizontal%20Product%20logo/horizont
 sources:
   - https://github.com/sonatype/nexus-public
 maintainers:
-  - name: adrianpowell
-    email: apowell@sonatype.com
-  - name: jflinchbaugh
-    email: jflinchbaugh@sonatype.com
-  - name: fernau
-    email: cfernau@sonatype.com
+  - email:  cloud-ops@sonatype.com
+    name: Sonatype
