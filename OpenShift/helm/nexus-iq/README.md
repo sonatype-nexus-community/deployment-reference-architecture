@@ -17,8 +17,8 @@
 | `ingress.tls.enabled`                       | Enable TLS                          | `true`                                 |
 | `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `nexus-tls`                             |
 | `ingress.path`                              | Path for ingress rules. GCP users should set to `/*` | `/`                    |
-| `deployment.preStart.command`               | Command to run before starting the nexus container  | `nil`                   |
-| `deployment.postStart.command`              | Command to run after starting the nexus container  | `nil`                    |
+| `deployment.preStart.command`               | Command to run before starting the IQ Server container  | `nil`                   |
+| `deployment.postStart.command`              | Command to run after starting the IQ Server container  | `nil`                    |
 | `deployment.terminationGracePeriodSeconds`  | Update termination grace period (in seconds)        | 120s                    |
 
 
