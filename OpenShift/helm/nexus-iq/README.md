@@ -45,7 +45,7 @@ iq:
 | Parameter            | Description                                                  | Default           |
 | -------------------- | ------------------------------------------------------------ | ----------------- |
 | `iq.imageName`       | The image name to use for the IQ Container, eg `sonatype/nexus-iq-server`  | `"registry.connect.redhat.com/sonatype/nexus-iq-server"`              |
-| `iq.imageTag`        | The image tag to use                                         | the latest tag, eg `"3.20.1-01-ubi-3"`              |
+| `iq.imageTag`        | The image tag to use                                         | the latest tag, eg `"1.85.0-01-ubi"`              |
 | `iq.imagePullSecret` | The base-64 encoded secret to pull a container from Red Hat  | `""`              |
 | `iq.applicationPort` | Port of the application connector. Must match the value in the `configYaml` property | `8070`            |
 | `iq.adminPort`       | Port of the application connector. Must match the value in the `configYaml` property | `8071`            |
