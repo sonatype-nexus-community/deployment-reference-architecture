@@ -14,13 +14,13 @@ spec:
       labels:
         app: {{ template "iqserver.fullname" . }}
     spec:
-      {{- if .Values.iqserver.imagePullSecret }}
+      {{- if .Values.iq.imagePullSecret }}
       imagePullSecrets:
-        - name: {{ .Values.iqserver.imagePullSecret }}
+        - name: {{ template "iqserver.name" . }}
       {{- end }}
       containers:
       - name: {{ template "iqserver.fullname" . }}
-        image: {{ .Values.iqserver.imageName }}:{{ .Values.iqserver.imageTag }}
+        image: {{ .Values.iq.imageName }}:{{ .Values.iq.imageTag }}
         ports:
         - containerPort: {{ .Values.iq.applicationPort }}
         {{- if .Values.deployment.terminationGracePeriodSeconds }}
