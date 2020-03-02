@@ -34,7 +34,7 @@ cat service-auth.json | base64 > service.base64
 iq:
   name: nxiq
   imageName: registry.connect.redhat.com/sonatype/nexus-iq-server
-  imageTag: 3.20.1-01-ubi-3
+  imageTag: 1.85.0-01-ubi
   imagePullPolicy: IfNotPresent
   imagePullSecret: "{BASE64-DOCKER-CONFIG}"
 ```
