@@ -19,6 +19,20 @@ spec:
         image: sonatype/nexus-iq-server
         ports:
         - containerPort: {{ .Values.iq.applicationPort }}
+        {{- if .Values.deployment.terminationGracePeriodSeconds }}
+        terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
+        {{- end }}
+        lifecycle:
+          {{- if .Values.deployment.postStart.command }}
+          postStart:
+            exec:
+              command: {{ .Values.deployment.postStart.command }}
+          {{- end }}
+          {{- if .Values.deployment.preStart.command }}
+          preStart:
+            exec:
+              command: {{ .Values.deployment.preStart.command }}
+          {{- end }}
         resources:
           limits:
             memory: {{ .Values.iq.memory }}
