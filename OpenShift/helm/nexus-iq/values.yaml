@@ -4,6 +4,10 @@
 
 iq:
   name: nxiq
+  imageName: registry.connect.redhat.com/sonatype/nexus-iq-server
+  imageTag: 1.85.0-01-ubi
+  imagePullPolicy: IfNotPresent
+  imagePullSecret: ""
   applicationPort: 8070
   adminPort: 8071
   storageCapacity: 1Gi

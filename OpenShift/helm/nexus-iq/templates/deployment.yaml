@@ -14,9 +14,13 @@ spec:
       labels:
         app: {{ template "iqserver.fullname" . }}
     spec:
+      {{- if .Values.iq.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ template "iqserver.name" . }}
+      {{- end }}
       containers:
       - name: {{ template "iqserver.fullname" . }}
-        image: sonatype/nexus-iq-server
+        image: {{ .Values.iq.imageName }}:{{ .Values.iq.imageTag }}
         ports:
         - containerPort: {{ .Values.iq.applicationPort }}
         {{- if .Values.deployment.terminationGracePeriodSeconds }}
