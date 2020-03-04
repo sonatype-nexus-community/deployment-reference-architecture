@@ -22,7 +22,7 @@ Red Hat Certified Container (RHCC) requires authentication in order to pull the 
   1. [Create a Service Account](https://access.redhat.com/terms-based-registry/)
   2. Copy the docker configuration JSON sample and replace the host from `registry.redhat.io` to `registry.connect.redhat.com` and save it as a file, eg:
 
-```JSON
+```json
 {
   "auths": {
     "registry.connect.redhat.com": {
@@ -41,12 +41,6 @@ cat service-auth.json | base64 > service.base64
 ```yaml
 nexus:
   imagePullSecret: {BASE64_ENCODED_SECRET}
-```
-
-Then this can be submitted to the cluster as:
-
-```bash
-kubectl create -f rhcc-pull-secret.yaml --namespace=NAMESPACEHERE
 ```
 
 ## Initialize Helm/Tiller on the Kubernetes cluster if needed
