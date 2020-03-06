@@ -32,6 +32,9 @@ Red Hat Certified Container (RHCC) requires authentication in order to pull the 
   }
 }
 ```
+
+If the cluster fails to pull the image, try reverting back to `registry.redhat.io` in the `auths` configuration.
+
   3. Encode the file in Base 64 format:
 
 ```bash
@@ -50,7 +53,6 @@ Install helm/tiller:
 ```bash
 $ helm init
 ```
-
 
 ## Testing the Chart
 To test the chart:
