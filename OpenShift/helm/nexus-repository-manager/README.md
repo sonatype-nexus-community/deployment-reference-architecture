@@ -10,6 +10,7 @@ This chart bootstraps a Nexus OSS deployment on a cluster using Helm.
 
 - Kubernetes 1.8+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
+- Helm 2
 
 ### With Open Docker Image
 
