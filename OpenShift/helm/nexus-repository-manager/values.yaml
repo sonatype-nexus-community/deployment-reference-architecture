@@ -10,7 +10,7 @@ deploymentStrategy: {}
 
 nexus:
   imageName: registry.connect.redhat.com/sonatype/nexus-repository-manager
-  imageTag: 3.20.1-01-ubi-3
+  imageTag: 3.21.1-01-ubi-23
   imagePullPolicy: IfNotPresent
   imagePullSecret: ""
   env:
