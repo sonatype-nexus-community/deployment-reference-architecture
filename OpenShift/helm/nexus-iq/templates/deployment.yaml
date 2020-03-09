@@ -16,7 +16,7 @@ spec:
     spec:
       {{- if .Values.iq.imagePullSecret }}
       imagePullSecrets:
-        - name: {{ template "iqserver.name" . }}
+        - name: {{ template "iqserver.fullname" . }}-imagepull
       {{- end }}
       containers:
       - name: {{ template "iqserver.fullname" . }}
@@ -45,22 +45,22 @@ spec:
             name: nxiq-pv-storage
           - mountPath: /etc/nexus-iq-server
             name: config-volume
-          {{- if .Values.iq.licenseSecret }}
+  {{- if .Values.iq.licenseSecret }}
           - mountPath: /etc/nexus-iq-license
             name: license-volume
-          {{- end }}
+  {{- end }}
       volumes:
         - name: nxiq-pv-storage
           persistentVolumeClaim:
-            claimName: {{ template "iqserver.fullname" . }}
+            claimName: {{ template "iqserver.fullname" . }}-data
         - name: config-volume
           configMap:
             name: {{ template "iqserver.fullname" . }}
             items:
               - key: config.yml
                 path: config.yml
-        {{- if .Values.iq.licenseSecret }}
+  {{- if .Values.iq.licenseSecret }}
         - name: license-volume
           secret:
-            secretName: {{ template "iqserver.fullname" . }}
-        {{- end }}
+            secretName: {{ template "iqserver.fullname" . }}-license
+  {{- end }}
