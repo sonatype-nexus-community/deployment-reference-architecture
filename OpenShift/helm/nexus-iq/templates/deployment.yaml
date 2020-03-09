@@ -42,7 +42,7 @@ spec:
             memory: {{ .Values.iq.memory }}
         volumeMounts:
           - mountPath: /sonatype-work
-            name: nxiq-pv-storage
+            name: nxiq-pv-data
           - mountPath: /etc/nexus-iq-server
             name: config-volume
   {{- if .Values.iq.licenseSecret }}
@@ -50,7 +50,7 @@ spec:
             name: license-volume
   {{- end }}
       volumes:
-        - name: nxiq-pv-storage
+        - name: nxiq-pv-data
           persistentVolumeClaim:
             claimName: {{ template "iqserver.fullname" . }}-data
         - name: config-volume

@@ -86,3 +86,7 @@ persistence:
   # existingClaim:
   # annotations:
   #  "helm.sh/resource-policy": keep
+  ## Configure the volume type.
+  # volumeConfiguration:
+  #   hostPath:
+  #     path: /data/nxiq/
