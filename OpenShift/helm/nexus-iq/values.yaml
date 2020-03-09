@@ -10,7 +10,6 @@ iq:
   imagePullSecret: ""
   applicationPort: 8070
   adminPort: 8071
-  storageCapacity: 1Gi
   memory: 1Gi
   # base 64 encoded license file with no line breaks
   licenseSecret: ""
@@ -74,3 +73,16 @@ service:
   - name: nexus-service
     targetPort: 80
     port: 80
+
+persistence:
+  accessMode: ReadWriteOnce
+  ## If defined, storageClass: <storageClass>
+  ## If set to "-", storageClass: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClass spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  # storageClass: "-"
+  storageSize: 1Gi
+  # existingClaim:
+  # annotations:
+  #  "helm.sh/resource-policy": keep

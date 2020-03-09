@@ -4,8 +4,8 @@ metadata:
   name: {{ template "iqserver.fullname" . }}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.persistence.accessMode | quote }}
   capacity:
-    storage: {{ .Values.iq.storageCapacity }}
+    storage: {{ .Values.persistence.storageSize | quote }}
   hostPath:
     path: /data/nxiq/

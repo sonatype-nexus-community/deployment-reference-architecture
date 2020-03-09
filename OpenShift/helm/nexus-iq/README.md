@@ -112,7 +112,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `iq.imagePullSecret` | The base-64 encoded secret to pull a container from Red Hat  | `""`              |
 | `iq.applicationPort` | Port of the application connector. Must match the value in the `configYaml` property | `8070`            |
 | `iq.adminPort`       | Port of the application connector. Must match the value in the `configYaml` property | `8071`            |
-| `iq.storageCapacity` | The amount of drive space to allocate                        | `1Gi`             |
 | `iq.memory`          | The amount of RAM to allocate                                | `1Gi`             |
 | `iq.licenseSecret`   | The base-64 encoded license file to be installed at startup  | `""`              |
 | `iq.configYaml`      | A YAML block which will be used as a configuration block for IQ Server. | See `values.yaml` |
@@ -124,6 +123,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | `deployment.preStart.command`               | Command to run before starting the IQ Server container  | `nil`                   |
 | `deployment.postStart.command`              | Command to run after starting the IQ Server container  | `nil`                    |
 | `deployment.terminationGracePeriodSeconds`  | Update termination grace period (in seconds)        | 120s                    |
+| `persistence.storageClass` | The provisioner class                        | `-` (disables dynamic provisioning             |
+| `persistence.storageSize` | The amount of drive space to allocate                        | `1Gi`             |
+| `persistence.accessMode` | Default access mode                        | `ReadWriteOnce`             |
+| `persistence.storageSize` | The amount of drive space to allocate                        | `1Gi`             |
 
 
 
