@@ -50,7 +50,7 @@ spec:
       volumes:
         - name: nxiq-pv-storage
           persistentVolumeClaim:
-            claimName: nxiq-pv-claim
+            claimName: {{ template "iqserver.fullname" . }}
         - name: config-volume
           configMap:
             name: {{ template "iqserver.fullname" . }}

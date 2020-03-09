@@ -2,6 +2,11 @@
 
 [Sonatype Nexus IQ Server](https://www.sonatype.com/nexus-iq-server)  is everything you need to know to trust your software supply chain. It powers Nexus Firewall, Nexus Lifecycle, and Nexus Auditor.
 
+### Prerequisites
+
+- Kubernetes 1.8+ with Beta APIs enabled
+- PV provisioner support in the underlying infrastructure
+- Helm 2
 
 ### With Open Docker Image
 
@@ -23,6 +28,9 @@ Red Hat Certified Container (RHCC) requires authentication in order to pull the 
   }
 }
 ```
+
+If the cluster fails to pull the image, try reverting back to `registry.redhat.io` in the `auths` configuration.
+
   3. Encode the file in Base 64 format:
 
 ```bash
@@ -39,6 +47,61 @@ iq:
   imagePullSecret: "{BASE64-DOCKER-CONFIG}"
 ```
 
+## Initialize Helm/Tiller on the Kubernetes cluster if needed
+
+Install helm/tiller:
+```bash
+$ helm init
+```
+
+## Testing the Chart
+To test the chart:
+```bash
+$ helm install --dry-run --debug ./
+```
+To test the chart with your own values:
+```bash
+$ helm install --dry-run --debug -f my_values.yaml ./
+```
+
+## Installing the Chart
+
+To install the chart:
+
+```bash
+$ helm install ./
+```
+
+The above command deploys IQ on the Kubernetes cluster in the default configuration.
+
+If you are getting the error `Error: no available release name found` during
+`helm install`, grant cluster-admin to kube-system:default service account:
+```bash
+$ kubectl create clusterrolebinding add-on-cluster-admin \
+    --clusterrole=cluster-admin \
+    --serviceaccount=kube-system:default
+```
+
+You can pass custom configuration values as:
+
+```
+helm install -f myvalues.yaml ./ --name sonatype-
+```
+
+The default login is admin/admin123
+
+## Uninstalling the Chart
+
+To uninstall/delete the deployment:
+
+```bash
+$ helm list
+NAME           	REVISION	UPDATED                 	STATUS  	CHART      	                NAMESPACE
+plinking-gopher	1       	Fri Sep  1 13:19:50 2017	DEPLOYED	iqserver-0.1.0	            default
+$ helm delete plinking-gopher
+```
+
+The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Chart Configuration Options
 
