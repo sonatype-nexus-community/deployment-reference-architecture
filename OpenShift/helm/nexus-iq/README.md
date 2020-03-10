@@ -126,18 +126,24 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.storageClass` | The provisioner class                        | `-` (disables dynamic provisioning             |
 | `persistence.storageSize` | The amount of drive space to allocate                        | `1Gi`             |
 | `persistence.accessMode` | Default access mode                        | `ReadWriteOnce`             |
-| `persistence.storageSize` | The amount of drive space to allocate                        | `1Gi`             |
+| `persistence.volumeConfiguration` | A YAML block to configure the persistent volume type. Defaults to `hostPath` which should not be used in production | `hostPath`             |
 
 
 
 ## Configuring IQ Server
 
-You can define the `config.yml` for IQ Server in your `myvalues.yml` file on startup. It is the `iq.configYaml` property. For more details, see the [Configuring IQ Server](https://help.sonatype.com/iqserver/configuring) help page.
+You can define the `config.yml` for IQ Server in your `myvalues.yml` file on startup. 
+It is the `iq.configYaml` property. For more details, see the [Configuring IQ Server](https://help.sonatype.com/iqserver/configuring) help page.
 
 
-## Installing License
+## Installing the License
 
-The license file can be installed via the UI when IQ server is running, or it can be done as a part of the deploy. To do it automatically, first encode your `.lic` file in Base 64 with no line breaks, eg:
+The license file can be installed via the UI when IQ server is running, or it can be done as a part of the deploy. 
+If you leave the `licenseFile` field empty/commented, IQ Server will start and prompt you to manually install the license 
+when you first enter the GUI.
+
+### Installing the License Automatically
+To do it automatically, first encode your `.lic` file in Base 64 with no line breaks, eg:
 
 ```bash
 base64 --wrap=0 mylicense.lic > lic.base64
@@ -150,10 +156,20 @@ iq:
   licenseSecret: bXkgc2FtcGxlIGxpY2Vuc2U=
 ```
 
-Ensure that in your values in `iq.configYaml` has
+Specify the `licenseFile` path in your `myvalues.yaml` in `iq.configYaml` as:
 
 ```yaml
-licenseFile: /etc/nexus-iq-license/license_lic
+iq:
+  configYaml:
+    server:
+      applicationConnectors:
+        - type: http
+          port: 8070
+      adminConnectors:
+        - type: http
+          port: 8071
+    createSampleData: true
+    sonatypeWork: /sonatype-work
+    # add this line and the `licenseSecret` above to autoconfigure licensing
+    licenseFile: /etc/nexus-iq-license/license_lic
 ```
-
-If you leave this entry blank, IQ Server will start but it will prompt you for a license when you first enter the GUI.
