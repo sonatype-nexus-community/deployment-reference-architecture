@@ -1,8 +1,4 @@
-The service can be exposed using a custom ingress node or by exposing a
-NodePort:
-
-  kubectl expose deployment --type=NodePort {{ template "iqserver.fullname" . }}
-
+You may also need to add a Route or Ingress to the new service.
 
 If you are using minikube, you can find the url as:
 
@@ -10,7 +6,8 @@ If you are using minikube, you can find the url as:
 
 Otherwise you can find the exposed port under `NodePort` in:
 
-# kubectl describe services {{ template "iqserver.fullname" . }}
+  kubectl describe services {{ template "iqserver.fullname" . }}
+
 Name:                     {{ template "iqserver.fullname" . }}
 Namespace:                default
 Labels:                   app=iqserver
