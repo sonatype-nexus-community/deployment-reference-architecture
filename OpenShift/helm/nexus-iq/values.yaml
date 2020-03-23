@@ -4,7 +4,7 @@
 
 iq:
   name: nxiq
-  imageName: sonatype-se/my-iq-server
+  imageName: sonatype/nexus-iq-server
   imageTag: 1.87.0
   imagePullPolicy: IfNotPresent
   imagePullSecret: ""
