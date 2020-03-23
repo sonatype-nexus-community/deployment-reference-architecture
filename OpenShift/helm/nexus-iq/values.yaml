@@ -15,6 +15,8 @@ iq:
   licenseSecret: ""
   # configYaml is the full text of the config.yml file that will be passed to IQ Server
   configYaml:
+    baseUrl: https://iq-server.local
+    sonatypeWork: /sonatype-work
     server:
       applicationConnectors:
         - type: http
@@ -23,7 +25,7 @@ iq:
         - type: http
           port: 8071
     createSampleData: true
-    sonatypeWork: /sonatype-work
+    
     # add this line with this file path and the `licenseSecret` above to autoconfigure licensing
     # licenseFile: /etc/nexus-iq-license/license_lic
 
