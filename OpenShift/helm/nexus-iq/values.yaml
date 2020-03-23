@@ -4,8 +4,8 @@
 
 iq:
   name: nxiq
-  imageName: registry.connect.redhat.com/sonatype/nexus-iq-server
-  imageTag: 1.85.0-01-ubi
+  imageName: sonatype-se/my-iq-server
+  imageTag: 1.87.0
   imagePullPolicy: IfNotPresent
   imagePullSecret: ""
   applicationPort: 8070
@@ -46,20 +46,22 @@ deployment:
   # Uncomment and modify this to run a command after starting the IQ Server
   postStart:
     command:    # '["/bin/sh", "-c", "ls"]'
-  terminationGracePeriodSeconds: 120
+  # terminationGracePeriodSeconds: 120
 
 ingress:
-  enabled: false
-  annotations: {}
+  enabled: true
+  annotations: {kubernetes.io/ingress.class: nginx}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   path: /
-  hosts: []
-    # - nexus.local
+  hosts:
+      - iq-server.local
+      - admin.iq-sewrver.local
   tls: []
     # - secretName: nexus-local-tls
     #   hosts:
     #     - nexus.local
+    #     - iqserver.local
     #     - nexus-docker.local
     #     - nexus-docker-hosted.local
 

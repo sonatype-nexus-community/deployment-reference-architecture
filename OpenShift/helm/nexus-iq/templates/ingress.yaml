@@ -26,22 +26,18 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ . | quote }}
+    - host: iq-server.local
       http:
         paths:
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}
-              servicePort: http
-  {{- end }}
-  {{- range .Values.service.additionalPorts }}
-    - host: {{ .host | quote }}
+              servicePort: 8070
+    - host: admin.iq-server.local
       http:
         paths:
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}
-              servicePort: {{ .name }}
-  {{- end }}
+              servicePort: 8071
 {{- end }}

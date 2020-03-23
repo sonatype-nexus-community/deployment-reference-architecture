@@ -23,6 +23,15 @@ spec:
         image: {{ .Values.iq.imageName }}:{{ .Values.iq.imageTag }}
         ports:
         - containerPort: {{ .Values.iq.applicationPort }}
+          protocol: TCP
+        - containerPort: {{ .Values.iq.adminPort }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 8071
+          # How long to wait until the liveness check should kick it.
+          initialDelaySeconds: 30
         {{- if .Values.deployment.terminationGracePeriodSeconds }}
         terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
         {{- end }}
