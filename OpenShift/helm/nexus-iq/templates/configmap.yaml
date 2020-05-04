@@ -4,4 +4,4 @@ metadata:
   name: {{ template "iqserver.fullname" . }}
 data:
   config.yml: |
-{{ toYaml .Values.iq.configYaml | indent 4 }}
+{{ toYaml .Values.configYaml | indent 4 }}

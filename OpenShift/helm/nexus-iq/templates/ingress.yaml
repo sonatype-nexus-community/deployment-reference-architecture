@@ -1,18 +1,20 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "iqserver.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app.kubernetes.io/name: {{ include "iqserver.name" . }}
-    helm.sh/chart: {{ include "iqserver.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "iqserver.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
-    {{- . | toYaml | trim | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   {{- if .Values.ingress.tls }}
@@ -26,14 +28,14 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    - host: iq-server.local
+    - host: iq-server.demo
       http:
         paths:
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}
               servicePort: 8070
-    - host: admin.iq-server.local
+    - host: admin.iq-server.demo
       http:
         paths:
           - path: {{ $ingressPath }}

@@ -9,9 +9,6 @@ metadata:
   name: {{ template "nexus.fullname" . }}
   labels:
 {{ include "nexus.labels" . | indent 4 }}
-{{- if .Values.nexus.labels }}
-{{ toYaml .Values.nexus.labels | indent 4 }}
-{{- end }}
 {{- if .Values.deployment.annotations }}
   annotations:
 {{ toYaml .Values.deployment.annotations | indent 4 }}
@@ -27,8 +24,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: {{ template "nexus.name" . }}
-      release: {{ .Release.Name }}
+      {{- include "nexus.selectorLabels" . | nindent 6 }}
   template:
     metadata:
     {{- if .Values.nexus.podAnnotations }}
@@ -36,8 +32,7 @@ spec:
 {{ toYaml .Values.nexus.podAnnotations | indent 8}}
     {{- end }}
       labels:
-        app: {{ template "nexus.name" . }}
-        release: {{ .Release.Name }}
+        {{- include "nexus.selectorLabels" . | nindent 8 }}
     spec:
       {{- if .Values.deployment.initContainers }}
       initContainers:
@@ -53,12 +48,14 @@ spec:
       {{- end }}
       {{- if .Values.nexus.imagePullSecret }}
       imagePullSecrets:
-        - name: {{ template "nexus.name" . }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: nexus
-          image: {{ .Values.nexus.imageName }}:{{ .Values.nexus.imageTag }}
-          imagePullPolicy: {{ .Values.nexus.imagePullPolicy }}
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.deployment.terminationGracePeriodSeconds }}
           terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
           {{- end }}
@@ -78,10 +75,8 @@ spec:
           resources:
 {{ toYaml .Values.nexus.resources | indent 12 }}
           ports:
-            - containerPort: {{ .Values.nexus.dockerPort }}
-              name: nexus-docker-g
-            - containerPort: {{ .Values.nexus.nexusPort }}
-              name: nexus-http
+            - name: nexus-ui
+              containerPort: {{ .Values.nexus.nexusPort }}
           livenessProbe:
             httpGet:
               path: {{ .Values.nexus.livenessProbe.path }}

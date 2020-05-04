@@ -1,33 +1,23 @@
 # Default values for iqserver.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
+replicaCount: 1
+image:
+  repository: sonatype/nexus-iq-server
+  pullPolicy: IfNotPresent
+  
 iq:
   name: nxiq
+  hostname: iq-server.demo
   imageName: sonatype/nexus-iq-server
-  imageTag: 1.87.0
-  imagePullPolicy: IfNotPresent
-  imagePullSecret: ""
+  imageTag: 1.90.0
   applicationPort: 8070
   adminPort: 8071
   memory: 1Gi
   # base 64 encoded license file with no line breaks
   licenseSecret: ""
-  # configYaml is the full text of the config.yml file that will be passed to IQ Server
-  configYaml:
-    baseUrl: https://iq-server.local
-    sonatypeWork: /sonatype-work
-    server:
-      applicationConnectors:
-        - type: http
-          port: 8070
-      adminConnectors:
-        - type: http
-          port: 8071
-    createSampleData: true
-    
-    # add this line with this file path and the `licenseSecret` above to autoconfigure licensing
-    # licenseFile: /etc/nexus-iq-license/license_lic
+  # add this line with this file path and the `licenseSecret` above to autoconfigure licensing
+  # licenseFile: /etc/nexus-iq-license/license_lic
 
 
 imagePullSecrets: []
@@ -37,18 +27,26 @@ fullnameOverride: ""
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
+  # Annotations to add to the service account
+  annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-deployment:
-  # Uncomment and modify this to run a command before starting the IQ Server
-  preStart:
-    command:    # '["/bin/rm", "-f", "/path/to/lockfile"]'
-  # Uncomment and modify this to run a command after starting the IQ Server
-  postStart:
-    command:    # '["/bin/sh", "-c", "ls"]'
-  # terminationGracePeriodSeconds: 120
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
 
 ingress:
   enabled: true
@@ -57,26 +55,33 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   path: /
   hosts:
-      - iq-server.local
-      - admin.iq-sewrver.local
+      - host: iq-server.demo
+        paths: [/]
+      - host: admin.iq-server.demo
+        paths: [/]
   tls: []
     # - secretName: nexus-local-tls
     #   hosts:
-    #     - nexus.local
     #     - iqserver.local
-    #     - nexus-docker.local
-    #     - nexus-docker-hosted.local
+    #     - admin.iqserver.local
 
-# # To use an additional service, set enable to true
-service:
-  # name: additional-svc
-  enabled: false
-  labels: {}
-  annotations: {}
-  ports:
-  - name: nexus-service
-    targetPort: 80
-    port: 80
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
 
 persistence:
   accessMode: ReadWriteOnce
@@ -94,3 +99,64 @@ persistence:
   # volumeConfiguration:
   #   hostPath:
   #     path: /data/nxiq/
+
+# configYaml is the full text of the config.yml file that will be passed to IQ Server
+configYaml:
+  baseUrl: http://iq-server.demo
+  sonatypeWork: /sonatype-work
+  server:
+    applicationConnectors:
+      - type: http
+        port: 8070
+    adminConnectors:
+      - type: http
+        port: 8071
+    # HTTP request log settings.
+    requestLog: 
+      appenders:
+        #All appenders set to console
+        - type: console    
+          # Do not display log statements below this threshold to stdout.
+          threshold: INFO
+          logFormat: "%clientHost %l %user [%date] \"%requestURL\" %statusCode %bytesSent %elapsedTime \"%header{User-Agent}\""
+  
+  createSampleData: true
+
+  logging:
+
+    # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+    level: ERROR
+
+    # Logger-specific settings.
+    loggers:
+      "com.sonatype.insight.scan": INFO
+      "eu.medsea.mimeutil.MimeUtil2": INFO
+      "org.apache.http": INFO
+      "org.apache.http.wire": ERROR
+      "org.eclipse.birt.report.engine.layout.pdf.font.FontConfigReader": WARN
+      "org.eclipse.jetty": INFO
+      "org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter": INFO   # WARNING: This reveals credentials at DEBUG level
+      "com.sonatype.insight.audit":
+        appenders:
+          #All appenders set to console
+          - type: console
+    
+            # Do not display log statements below this threshold to stdout.
+            threshold: INFO
+
+      "com.sonatype.insight.policy.violation":
+        appenders:
+          - type: console
+    
+            # Do not display log statements below this threshold to stdout.
+            threshold: INFO
+
+    appenders:
+  
+      # Settings for logging to stdout.
+      - type: console
+    
+        # Do not display log statements below this threshold to stdout.
+        threshold: INFO
+      
+        logFormat: "%d{'yyyy-MM-dd HH:mm:ss,SSSZ'} %level [%thread] %X{username} %logger - %msg%n"

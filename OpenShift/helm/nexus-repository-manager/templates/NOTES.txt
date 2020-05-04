@@ -1,38 +1,22 @@
-The service can be exposed using a custom ingress node or by exposing a
-NodePort:
+1. Get the application URL by running these commands:
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ . }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.serviceType }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "nexus.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.serviceType }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "nexus.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "nexus.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.service.appliocationPort }}
+{{- else if contains "ClusterIP" .Values.service.serviceType }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "mychart.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:80
+{{- end }}
 
-  kubectl expose deployment --type=NodePort {{ template "nexus.fullname" . }}
-
-You may also need to add a Route or Ingress to the new service
-that was created by the exposed deployment.
-
-If you are using minikube, you can find the url as:
-
-  minikube service --url=true {{ template "nexus.fullname" . }}
-
-Otherwise you can find the exposed port under `NodePort` in:
-
-   kubectl describe services {{ template "nexus.fullname" . }}
-
-Name:                     {{ template "nexus.fullname" . }}
-Namespace:                default
-Labels:                   app=sonatype-nexus
-                          chart=sonatype-nexus-0.2.0
-                          fullname={{ template "nexus.fullname" . }}
-                          heritage=Tiller
-                          release=vocal-lion
-Annotations:              <none>
-Selector:                 app=sonatype-nexus,release={{ .Release.Name }}
-Type:                     NodePort
-IP:                       1.2.3.4
-Port:                     port-1  5003/TCP
-TargetPort:               5003/TCP
-NodePort:                 port-1  30396/TCP
-Endpoints:                172.17.0.6:5003
-Port:                     port-2  8081/TCP
-TargetPort:               8081/TCP
-NodePort:                 port-2  31341/TCP
-Endpoints:                172.17.0.6:8081
-Session Affinity:         None
-External Traffic Policy:  Cluster
-Events:                   <none>
