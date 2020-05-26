@@ -59,9 +59,9 @@ spec:
         - name: nexus
           image: {{ .Values.nexus.imageName }}:{{ .Values.nexus.imageTag }}
           imagePullPolicy: {{ .Values.nexus.imagePullPolicy }}
-          {{- if .Values.deployment.terminationGracePeriodSeconds }}
-          terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
-          {{- end }}
+          # {{- if .Values.deployment.terminationGracePeriodSeconds }}
+          # terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
+          # {{- end }}
           lifecycle:
           {{- if .Values.deployment.postStart.command }}
             postStart:
