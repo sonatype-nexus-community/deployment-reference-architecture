@@ -9,8 +9,8 @@ deploymentStrategy: {}
   # type: RollingUpdate
 
 nexus:
-  imageName: registry.connect.redhat.com/sonatype/nexus-repository-manager
-  imageTag: 3.21.1-01-ubi-23
+  imageName: sonatype/nexus3
+  imageTag: 3.23.0
   imagePullPolicy: IfNotPresent
   imagePullSecret: ""
   env:
