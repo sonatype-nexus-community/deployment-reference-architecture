@@ -23,9 +23,7 @@ spec:
         image: {{ .Values.iq.imageName }}:{{ .Values.iq.imageTag }}
         ports:
         - containerPort: {{ .Values.iq.applicationPort }}
-        # {{- if .Values.deployment.terminationGracePeriodSeconds }}
-        # terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
-        # {{- end }}
+        - containerPort: {{ .Values.iq.adminPort }}
         lifecycle:
           {{- if .Values.deployment.postStart.command }}
           postStart:
