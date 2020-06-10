@@ -10,7 +10,7 @@
 
 ### With Open Docker Image
 
-By default, the Chart uses Red Hat's Certified Container. If you want to use the standard docker image, run with `--set iq.imageName=sonatype/nexus-iq-server`.
+By default, the Chart uses Red Hat's Certified Container. If you want to use the standard docker image, run with `--set iq.imageName=sonatype/nexus-iq-server:1.93.0`.
 
 ### With Red Hat Certified container
 
