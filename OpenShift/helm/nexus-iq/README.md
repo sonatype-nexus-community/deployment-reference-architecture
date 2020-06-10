@@ -85,7 +85,7 @@ $ kubectl create clusterrolebinding add-on-cluster-admin \
 You can pass custom configuration values as:
 
 ```
-helm install -f myvalues.yaml ./ --name sonatype-
+helm install -f myvalues.yaml ./ --name sonatype-iq
 ```
 
 The default login is admin/admin123
