@@ -20,7 +20,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "iqserver.fullname" . }}
-        image: {{ .Values.iq.imageName }}:{{ .Values.iq.imageTag }}
+        image: {{ .Values.iq.imageName }}
         ports:
         - containerPort: {{ .Values.iq.applicationPort }}
         {{- if .Values.deployment.terminationGracePeriodSeconds }}

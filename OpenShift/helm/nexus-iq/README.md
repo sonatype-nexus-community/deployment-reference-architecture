@@ -42,7 +42,6 @@ cat service-auth.json | base64 > service.base64
 iq:
   name: nxiq
   imageName: registry.connect.redhat.com/sonatype/nexus-iq-server
-  imageTag: 1.85.0-01-ubi
   imagePullPolicy: IfNotPresent
   imagePullSecret: "{BASE64-DOCKER-CONFIG}"
 ```
@@ -107,8 +106,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Parameter            | Description                                                  | Default           |
 | -------------------- | ------------------------------------------------------------ | ----------------- |
-| `iq.imageName`       | The image name to use for the IQ Container, eg `sonatype/nexus-iq-server`  | `"registry.connect.redhat.com/sonatype/nexus-iq-server"`              |
-| `iq.imageTag`        | The image tag to use                                         | the latest tag, eg `"1.85.0-01-ubi"`              |
+| `iq.imageName`       | The image name to use for the IQ Container, eg `sonatype/nexus-iq-server`  | `"registry.connect.redhat.com/sonatype/nexus-iq-server:1.93.0-ubi-1"` |
 | `iq.imagePullSecret` | The base-64 encoded secret to pull a container from Red Hat  | `""`              |
 | `iq.applicationPort` | Port of the application connector. Must match the value in the `configYaml` property | `8070`            |
 | `iq.adminPort`       | Port of the application connector. Must match the value in the `configYaml` property | `8071`            |
