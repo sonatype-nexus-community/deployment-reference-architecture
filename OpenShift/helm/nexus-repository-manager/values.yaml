@@ -9,8 +9,8 @@ deploymentStrategy: {}
   # type: RollingUpdate
 
 nexus:
-  imageName: registry.connect.redhat.com/sonatype/nexus-repository-manager
-  imageTag: 3.21.1-01-ubi-23
+  imageName: sonatype/nexus3
+  imageTag: 3.23.0
   imagePullPolicy: IfNotPresent
   imagePullSecret: ""
   env:
@@ -36,7 +36,7 @@ nexus:
   dockerPort: 5003
   nexusPort: 8081
   service:
-    type: NodePort
+    type: ClusterIP
     # clusterIP: None
   # annotations: {}
     ## When using LoadBalancer service type, use the following AWS certificate from ACM

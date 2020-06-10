@@ -4,13 +4,15 @@
 
 iq:
   name: nxiq
-  imageName: registry.connect.redhat.com/sonatype/nexus-iq-server
-  imageTag: 1.85.0-01-ubi
+  imageName: sonatype/nexus-iq-server
+  imageTag: 1.91.0
   imagePullPolicy: IfNotPresent
   imagePullSecret: ""
   applicationPort: 8070
   adminPort: 8071
   memory: 1Gi
+  service:
+    type: ClusterIP
   # base 64 encoded license file with no line breaks
   licenseSecret: ""
   # configYaml is the full text of the config.yml file that will be passed to IQ Server

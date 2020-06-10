@@ -10,4 +10,4 @@ spec:
     port: {{ .Values.iq.applicationPort }}
   - name: admin
     port: {{ .Values.iq.adminPort }}
-  type: NodePort
+  type: {{ .Values.iq.serviceType }}
