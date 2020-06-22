@@ -4,21 +4,19 @@ If you are using minikube, you can find the url as:
 
   minikube service --url=true {{ template "iqserver.fullname" . }}
 
-Otherwise you can find the exposed port under `NodePort` in:
+Otherwise you can find the exposed port under `ClusterIP` in:
 
   kubectl describe services {{ template "iqserver.fullname" . }}
 
 Name:                     {{ template "iqserver.fullname" . }}
 Namespace:                default
-Labels:                   app=iqserver
+Labels:                   <none>
 Annotations:              <none>
 Selector:                 app=iqserver
-Type:                     NodePort
+Type:                     ClusterIP
 IP:                       1.2.3.4
-Port:                     <unset>  8070/TCP
+Port:                     application  8070/TCP
 TargetPort:               {{ .Values.iq.applicationPort }}/TCP
-NodePort:                 <unset>  31785/TCP
 Endpoints:                172.17.0.5:{{ .Values.iq.applicationPort }}
 Session Affinity:         None
-External Traffic Policy:  Cluster
 Events:                   <none>
