@@ -14,7 +14,7 @@ This chart bootstraps a Nexus OSS deployment on a cluster using Helm.
 
 ### With Open Docker Image
 
-By default, the Chart uses Red Hat's Certified Container. If you want to use the standard docker image, run with `--set nexus.imageName=sonatype/nexus3`.
+By default, the Chart uses Red Hat's Certified Container. If you want to use the standard docker image, run with `--set nexus.imageName=sonatype/nexus3:3.24.0`.
 
 ### With Red Hat Certified container
 
