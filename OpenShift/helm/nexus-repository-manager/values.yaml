@@ -35,7 +35,6 @@ nexus:
   dockerPort: 5003
   nexusPort: 8081
   service:
-    type: NodePort
     # clusterIP: None
   # annotations: {}
     ## When using LoadBalancer service type, use the following AWS certificate from ACM
