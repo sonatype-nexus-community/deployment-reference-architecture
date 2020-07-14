@@ -18,14 +18,14 @@ spec:
       imagePullSecrets:
         - name: {{ template "iqserver.fullname" . }}-imagepull
       {{- end }}
+      {{- if .Values.deployment.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
+      {{- end }}
       containers:
       - name: {{ template "iqserver.fullname" . }}
         image: {{ .Values.iq.imageName }}
         ports:
         - containerPort: {{ .Values.iq.applicationPort }}
-        {{- if .Values.deployment.terminationGracePeriodSeconds }}
-        terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
-        {{- end }}
         lifecycle:
           {{- if .Values.deployment.postStart.command }}
           postStart:
