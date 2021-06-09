@@ -72,13 +72,13 @@
     },
     "NexusRepositoryManagerVersion":     {
       "Type": "String",
-      "Default": "3.29.2-02",
+      "Default": "3.30.1-01",
       "MinLength": 1,
       "Description": "The Nexus Repository Manager version"
     },
     "NexusRepositoryManagerSha256":     {
       "Type": "String",
-      "Default": "bc7cbb577db195868f25d73ca22de3f7cc1e39d7384794bae03c28f5823ca3a7",
+      "Default": "527c5ba75ffeb4400d553cb1e9885ae3c914ff2642724c8752f75bdf79cfe411",
       "MinLength": 1,
       "Description": "The Nexus Repository Manager SHA-256 hash"
     },
