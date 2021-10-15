@@ -347,8 +347,8 @@
                     ]
                   ]
                 },
-                "     yum install -y pip",
-                "     type aws || pip install awscli",
+                "     yum update -y",
+                "     yum install awscli -y",
                 "     service awslogs start",
                 "     mkdir -p /opt/aws-cfn-bootstrap/",
                 "     tar -xzf /tmp/aws-cfn-bootstrap-latest.tar.gz -C /opt/aws-cfn-bootstrap/ --strip-components=1",
