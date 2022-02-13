@@ -10,7 +10,7 @@
     },
     "ChefRecipeVersion":     {
       "Type": "String",
-      "Default": "release-0.5.20180828-231916.863899c",
+      "Default": "release-0.5.20220111-153152.2b86c3a",
       "Description": "URL of chef cookbook to install"
     },
     "LicenseS3Bucket":     {
@@ -147,7 +147,7 @@
         "centos7": "ami-0eab3a90fc693af19"
       },
       "eu-central-1": {
-        "centos7": "ami-04cf43aca3e6f3de3"
+        "centos7": "ami-0e8286b71b81c3cc1"
       },
       "ap-southeast-1": {
         "centos7": "ami-0b4dd9d65556cac22"
