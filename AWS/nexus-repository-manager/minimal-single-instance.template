@@ -35,16 +35,16 @@
   }},
   "Mappings":   {
     "AmiRegionMap":     {
-      "us-east-1": {"centos7": "ami-02eac2c0129f6376b"},
-      "us-east-2": {"centos7": "ami-0f2b4fc905b0bd1f1"},
-      "us-west-1": {"centos7": "ami-074e2d6769f445be5"},
-      "us-west-2": {"centos7": "ami-01ed306a12b7d1c96"},
-      "eu-west-1": {"centos7": "ami-0ff760d16d9497662"},
-      "eu-west-2": {"centos7": "ami-0eab3a90fc693af19"},
-      "eu-central-1": {"centos7": "ami-04cf43aca3e6f3de3"},
-      "ap-southeast-1": {"centos7": "ami-0b4dd9d65556cac22"},
-      "ap-southeast-2": {"centos7": "ami-08bd00d7713a39e7d"},
-      "ca-central-1": {"centos7": "ami-033e6106180a626d0"}
+      "us-east-1": {"centos7": "ami-0affd4508a5d2481b"},
+      "us-east-2": {"centos7": "ami-01e36b7901e884a10"},
+      "us-west-1": {"centos7": "ami-098f55b4287a885ba"},
+      "us-west-2": {"centos7": "ami-0bc06212a56393ee1"},
+      "eu-west-1": {"centos7": "ami-0b850cf02cc00fdc8"},
+      "eu-west-2": {"centos7": "ami-098a393b6fa6e700b"},
+      "eu-central-1": {"centos7": "ami-0e8286b71b81c3cc1"},
+      "ap-southeast-1": {"centos7": "ami-07f65177cb990d65b"},
+      "ap-southeast-2": {"centos7": "ami-0b2045146eb00b617"},
+      "ca-central-1": {"centos7": "ami-04a25c39dc7a8aebb"}
     },
     "Defaults":     {
       "ChefRecipeVersion": {"Value": "release-0.5.20190212-155606.d1afdfe"},
