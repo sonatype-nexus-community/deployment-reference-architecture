@@ -61,13 +61,13 @@
     },
     "NexusIQVersion":     {
       "Type": "String",
-      "Default": "1.140.0-01",
+      "Default": "1.141.0-01",
       "MinLength": 1,
       "Description": "The Nexus IQ Server version"
     },
     "NexusIQSha256":     {
       "Type": "String",
-      "Default": "8fb150efdf5bfb3b3770f35eed8bed4688bea050f2d2b8adcee4f0519a21c135\n",
+      "Default": "eb938efc1dbf4c83bc1a2b0e26ad6fc2d1c14e18104c2db07501668840c5637d\n",
       "MinLength": 1,
       "Description": "The Nexus IQ Server SHA-256 hash"
     },
