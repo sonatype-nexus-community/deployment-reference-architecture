@@ -96,7 +96,7 @@
         "centos7": "ami-0b850cf02cc00fdc8"
       },
       "eu-west-2": {
-        "centos7": "ami-098a393b6fa6e700b"
+        "centos7": "ami-09e5afc68eed60ef4"
       },
       "eu-central-1": {
         "centos7": "ami-0e8286b71b81c3cc1"
@@ -163,7 +163,8 @@
             "Ebs": {
               "DeleteOnTermination": {
                 "Ref": "DeleteBlockDeviceOnTermination"
-              }
+              },
+              "VolumeSize": "30"
             }
           }
         ],
