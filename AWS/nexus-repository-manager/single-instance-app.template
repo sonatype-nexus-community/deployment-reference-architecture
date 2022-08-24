@@ -10,7 +10,7 @@
     },
     "ChefRecipeVersion":     {
       "Type": "String",
-      "Default": "release-0.5.20180828-231916.863899c",
+      "Default": "release-0.5.20220823-230012.7d17562",
       "Description": "URL of chef cookbook to install"
     },
     "LicenseS3Bucket":     {
@@ -144,7 +144,7 @@
         "centos7": "ami-0b850cf02cc00fdc8"
       },
       "eu-west-2": {
-        "centos7": "ami-098a393b6fa6e700b"
+        "centos7": "ami-09e5afc68eed60ef4"
       },
       "eu-central-1": {
         "centos7": "ami-0e8286b71b81c3cc1"
@@ -262,8 +262,8 @@
                 " - mkdir -p /opt/aws-cfn-bootstrap/ && tar -xzf /tmp/aws-cfn-bootstrap-latest.tar.gz -C /opt/aws-cfn-bootstrap/ --strip-components=1",
                 " - yum update -y",
                 " - yum install awscli -y",
-                " - yum install python2-pip -y",                
-                " - cd /opt/aws-cfn-bootstrap && python setup.py install && pip install boto3",
+                " - yum install python2-pip -y",
+                " - cd /opt/aws-cfn-bootstrap && python setup.py install && pip install boto3 && pip install awscli-cwlogs",
                 {
                   "Fn::Join": [
                     "",

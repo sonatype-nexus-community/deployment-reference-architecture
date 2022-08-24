@@ -22,7 +22,7 @@
     },
     "ChefRecipeVersion":     {
       "Type": "String",
-      "Default": "release-0.5.20190212-155606.d1afdfe",
+      "Default": "release-0.5.20220823-230012.7d17562",
       "Description": "URL of chef cookbook to install"
     },
     "LicenseS3Bucket":     {

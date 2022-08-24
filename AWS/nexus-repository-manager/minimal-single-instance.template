@@ -40,14 +40,14 @@
       "us-west-1": {"centos7": "ami-098f55b4287a885ba"},
       "us-west-2": {"centos7": "ami-0bc06212a56393ee1"},
       "eu-west-1": {"centos7": "ami-0b850cf02cc00fdc8"},
-      "eu-west-2": {"centos7": "ami-098a393b6fa6e700b"},
+      "eu-west-2": {"centos7": "ami-09e5afc68eed60ef4"},
       "eu-central-1": {"centos7": "ami-0e8286b71b81c3cc1"},
       "ap-southeast-1": {"centos7": "ami-07f65177cb990d65b"},
       "ap-southeast-2": {"centos7": "ami-0b2045146eb00b617"},
       "ca-central-1": {"centos7": "ami-04a25c39dc7a8aebb"}
     },
     "Defaults":     {
-      "ChefRecipeVersion": {"Value": "release-0.5.20190212-155606.d1afdfe"},
+      "ChefRecipeVersion": {"Value": "release-0.5.20220823-230012.7d17562"},
       "VpcNetBlock": {"Value": "10.0.0.0/16"},
       "SubnetAz": {"Value": "10.0.1.0/24"},
       "InstanceType": {"Value": "t2.large"},
