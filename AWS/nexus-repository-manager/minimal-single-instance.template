@@ -52,8 +52,8 @@
       "SubnetAz": {"Value": "10.0.1.0/24"},
       "InstanceType": {"Value": "t2.large"},
       "DeleteBlockDeviceOnTermination": {"Value": "true"},
-      "NexusRepositoryManagerVersion": {"Value": "3.37.3-02"},
-      "NexusRepositoryManagerSha256": {"Value": "c1db431908c5a76b44015c555d6ef4517abf0a86844faffee0f5d6c62359312d"},
+      "NexusRepositoryManagerVersion": {"Value": "3.41.1-01"},
+      "NexusRepositoryManagerSha256": {"Value": "1ad45fd883f41005e7f89ccb9e504f09a9a5708eb996493b985eed09e6482faa"},
       "JavaDownloadUrl": {"Value": "https://download.oracle.com/otn-pub/java/jdk/8u202-b08/1961070e4c9b4e26a04e7f5a083f551e/server-jre-8u202-linux-x64.tar.gz"},
       "JavaSha256": {"Value": "61292e9d9ef84d9702f0e30f57b208e8fbd9a272d87cd530aece4f5213c98e4e"},
       "LogGroupName": {"Value": ""}
