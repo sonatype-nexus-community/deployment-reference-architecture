@@ -61,13 +61,13 @@
     },
     "NexusIQVersion":     {
       "Type": "String",
-      "Default": "1.167.0-01",
+      "Default": "1.168.0-01",
       "MinLength": 1,
       "Description": "The Nexus IQ Server version"
     },
     "NexusIQSha256":     {
       "Type": "String",
-      "Default": "81a2381b511d0781276faf7517789422ab9d4ea354046b3c258328f441d32dfe\n",
+      "Default": "af07e71f188afb063bd0a3a458a842fa4058fb683e0c44216ec889f6e5785c34\n",
       "MinLength": 1,
       "Description": "The Nexus IQ Server SHA-256 hash"
     },
@@ -92,39 +92,39 @@
   },
   "Metadata": {"AWS::CloudFormation::Interface":   {
     "ParameterGroups":     [
-      {
+            {
         "Label": {"default": "Launch configuration"},
         "Parameters": ["KeyName"]
       },
-      {
+            {
         "Label": {"default": "Network configuration"},
         "Parameters":         [
           "VpcNetBlock",
           "SubnetAz"
         ]
       },
-      {
+            {
         "Label": {"default": "Instance configuration"},
         "Parameters":         [
           "InstanceType",
           "DeleteBlockDeviceOnTermination"
         ]
       },
-      {
+            {
         "Label": {"default": "Nexus IQ Server version"},
         "Parameters":         [
           "NexusIQVersion",
           "NexusIQSha256"
         ]
       },
-      {
+            {
         "Label": {"default": "Java version"},
         "Parameters":         [
           "JavaDownloadUrl",
           "JavaSha256"
         ]
       },
-      {
+            {
         "Label": {"default": "Internal parameters"},
         "Parameters": ["ChefRecipeVersion"]
       }
